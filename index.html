@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>高一1班学分计算系统</title>
+    <!-- 引入Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 引入Font Awesome用于图标 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- 引入Chart.js用于图表 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .credit-increase {
+            color: green;
+            font-weight: bold;
+        }
+        .credit-decrease {
+            color: red;
+            font-weight: bold;
+        }
+        .table-responsive {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .slider-label {
+            margin-bottom: 5px;
+        }
+        .rank-up {
+            color: green;
+        }
+        .rank-down {
+            color: red;
+        }
+        .rank-neutral {
+            color: gray;
+        }
+        /* 进度条样式 */
+        #loading {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            height: 100%;
+            width: 100%;
+            overflow: visible;
+            background: rgba(255,255,255,0.8) url('https://i.imgur.com/LLF5iyg.gif') no-repeat center center;
+        }
+        /* 图表容器样式 */
+        .chart-container {
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 进度条 -->
+    <div id="loading"></div>
+
+    <div class="container">
+        <h1 class="mb-4 text-center">高一1班学分计算系统(Beta) BY ZZY</h1>
+        
+        <!-- 设置区域 -->
+        <div class="card mb-4">
+            <div class="card-header">参数设置</div>
+            <div class="card-body">
+                <form id="settings-form" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="weightS" class="form-label slider-label">成绩变化权重 （分数优先）(w<sub>S</sub>): <span id="weightS-value">1</span></label>
+                        <input type="range" class="form-range" id="weightS" min="0" max="5" step="0.1" value="1">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="weightR" class="form-label slider-label">排名变化权重（名次优先）: <span id="weightR-value">1</span></label>
+                        <input type="range" class="form-range" id="weightR" min="0" max="5" step="0.1" value="1">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="creditLimit" class="form-label">学分变化极限值</label>
+                        <input type="number" class="form-control" id="creditLimit" value="10" min="1">
+                        <div class="form-text">例如：最大±10学分</div>
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="button" class="btn btn-primary" id="apply-settings">应用设置</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- 数据导入导出 -->
+        <div class="mb-4 d-flex justify-content-between">
+            <div>
+                <button class="btn btn-success me-2" id="import-excel"><i class="fa fa-file-import"></i> 从Excel导入成绩</button>
+                <button class="btn btn-info" id="export-results"><i class="fa fa-file-export"></i> 导出计算结果为Excel</button>
+            </div>
+            <div>
+                <button class="btn btn-secondary" id="download-template"><i class="fa fa-download"></i> 下载Excel模板</button>
+                <!-- 解释按钮 -->
+                <button class="btn btn-outline-info ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#algorithmExplanation" aria-expanded="false" aria-controls="algorithmExplanation">
+                    <i class="fa fa-info-circle"></i> 学分算法说明
+                </button>
+            </div>
+        </div>
+        
+        <!-- 学分算法说明 -->
+        <div class="collapse mb-4" id="algorithmExplanation">
+            <div class="card card-body">
+                <h5>学分计算算法说明</h5>
+                <p>本系统根据绩变化（ΔS）和排名变化（ΔR）来决定学分的增减。具体步骤如下：</p>
+                <ol>
+                    <li><strong>成绩变化（ΔS）</strong>：本次成绩与上次成绩的差值。</li>
+                    <li><strong>排名变化（ΔR）</strong>：上次排名与本次排名的差值。ΔR为正表示排名上升（名次变好），为负表示排名下降。</li>
+                    <li><strong>标准化处理</strong>：将所有人的ΔS和ΔR进行标准化，计算每人的z-score。</li>
+                    <li><strong>权重应用</strong>：根据设定的成绩变化权重（w<sub>S</sub>）和排名变化权重（w<sub>R</sub>），计算综合得分：</li>
+                    <pre>Credit Change = Round(w<sub>S</sub> × z<sub>S</sub> + w<sub>R</sub> × z<sub>R</sub>)</pre>
+                    <li><strong>学分变化限制</strong>：将计算结果限制在设定的极限值范围内（例如，±10学分）。</li>
+                    <li><strong>结果展示</strong>：学分增加用绿色标记，减少用红色标记，缺考不受影响。</li>
+                </ol>
+                <p>此算法确保了学分的增减不仅反映了个人的进步或退步，还综合考虑了班级整体的表现变化。即同时考虑成绩和排名变化抵消考试难易度差异的影响，通过调整权重系数和学分上限适应不同考试情况，不会出现第一名加分永远最多，最后一名加分永远最少的情况</p>
+            </div>
+        </div>
+        
+        <!-- 成绩输入表格 -->
+        <div class="table-responsive mb-4">
+            <table class="table table-bordered table-hover" id="scores-table">
+                <thead class="table-light sticky-top">
+                    <tr>
+                        <th>学号</th>
+                        <th>姓名</th>
+                        <th>上次成绩</th>
+                        <th>本次成绩</th>
+                        <th>上次排名</th>
+                        <th>本次排名</th>
+                        <th>名次变化</th>
+                        <th>学分变化</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- 动态生成表格行 -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 计算按钮 -->
+        <div class="mb-4 text-center">
+            <button class="btn btn-primary btn-lg" id="calculate-credits"><i class="fa fa-calculator"></i> 计算学分</button>
+        </div>
+        
+        <!-- 学分结果展示提示 -->
+        <div id="results-section">
+            <!-- 结果将在此处显示 -->
+        </div>
+        
+        <!-- 图表容器 -->
+        <div class="chart-container">
+            <h3 class="text-center">学分变化分布图</h3>
+            <canvas id="creditChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- 引入必要的JS库 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SheetJS用于Excel导入导出 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <!-- 主脚本 -->
+    <script>
+        // 学生名单
+        const students = [
+            { id: 1, name: "蔡克一" },
+            { id: 2, name: "陈爱嘉" },
+            { id: 3, name: "陈庆隆" },
+            { id: 4, name: "程博涵" },
+            { id: 5, name: "丁陈浩" },
+            { id: 6, name: "范饶" },
+            { id: 7, name: "冯谨远" },
+            { id: 8, name: "付世鑫" },
+            { id: 9, name: "郭陈凯" },
+            { id: 10, name: "胡莘桐" },
+            { id: 11, name: "宦晓诚" },
+            { id: 12, name: "纪裕韬" },
+            { id: 13, name: "蓝天宇" },
+            { id: 14, name: "李佳妮" },
+            { id: 15, name: "李宇涵" },
+            { id: 16, name: "刘宸玮" },
+            { id: 17, name: "卢钰涛" },
+            { id: 18, name: "陆一涵" },
+            { id: 19, name: "毛语馨" },
+            { id: 20, name: "穆子浩" },
+            { id: 21, name: "潘莣萧" },
+            { id: 22, name: "戚天娇" },
+            { id: 23, name: "钱湘钰" },
+            { id: 24, name: "沈睿涵" },
+            { id: 26, name: "汤奕辰" },
+            { id: 27, name: "王静思" },
+            { id: 28, name: "王一涵" },
+            { id: 29, name: "吴仕君" },
+            { id: 30, name: "吴欣航" },
+            { id: 31, name: "夏芸溪" },
+            { id: 32, name: "肖诺妍" },
+            { id: 33, name: "谢镰" },
+            { id: 34, name: "邢梓瑜" },
+            { id: 35, name: "徐奥霁" },
+            { id: 36, name: "薛雨绅" },
+            { id: 37, name: "颜晶晶" },
+            { id: 38, name: "姚金语馨" },
+            { id: 39, name: "殷樱" },
+            { id: 40, name: "尤芸瑶" },
+            { id: 41, name: "俞沣芮" },
+            { id: 42, name: "袁梦如" },
+            { id: 43, name: "张厚涵" },
+            { id: 44, name: "张璟雯" },
+            { id: 45, name: "张毅" },
+            { id: 46, name: "张周一" },
+            { id: 47, name: "周灿" },
+            { id: 48, name: "周孝儒" },
+            { id: 49, name: "朱贺" },
+            { id: 50, name: "邹兴宇" }
+        ];
+        
+        // 初始化表格
+        function initializeTable() {
+            const tableBody = document.getElementById('table-body');
+            tableBody.innerHTML = '';
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td><input type="number" class="form-control last-score" data-id="${student.id}" placeholder="缺考留空"></td>
+                    <td><input type="number" class="form-control current-score" data-id="${student.id}" placeholder="缺考留空"></td>
+                    <td class="last-rank">-</td>
+                    <td class="current-rank">-</td>
+                    <td class="rank-change">-</td>
+                    <td class="credit-change">-</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // 导入Excel文件
+        document.getElementById('import-excel').addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.xlsx, .xls';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                    populateTableFromExcel(jsonData);
+                };
+                reader.readAsArrayBuffer(file);
+            };
+            input.click();
+        });
+        
+        // 从Excel填充表格
+        function populateTableFromExcel(data) {
+            // 假设Excel第一行为表头，后续行为数据
+            // 表头应包含：学号, 姓名, 上次成绩, 本次成绩
+            if (data.length < 2) {
+                alert('Excel文件没有足够的数据。');
+                return;
+            }
+            const header = data[0];
+            const requiredHeaders = ['学号', '姓名', '上次成绩', '本次成绩'];
+            for (let i = 0; i < requiredHeaders.length; i++) {
+                if (header[i] !== requiredHeaders[i]) {
+                    alert(`Excel表头错误，预期第${i+1}列为"${requiredHeaders[i]}"。`);
+                    return;
+                }
+            }
+            // 填充数据
+            for (let i = 1; i < data.length; i++) {
+                const row = data[i];
+                if (row.length < 4) continue; // 跳过不完整的行
+                const id = parseInt(row[0]);
+                const lastScore = row[2] !== undefined ? row[2] : '';
+                const currentScore = row[3] !== undefined ? row[3] : '';
+                // 查找对应的输入框并填充
+                const lastScoreInput = document.querySelector(`.last-score[data-id="${id}"]`);
+                const currentScoreInput = document.querySelector(`.current-score[data-id="${id}"]`);
+                if (lastScoreInput && currentScoreInput) {
+                    lastScoreInput.value = lastScore;
+                    currentScoreInput.value = currentScore;
+                }
+            }
+            alert('成绩已成功导入！');
+        }
+        
+        // 下载模板
+        document.getElementById('download-template').addEventListener('click', () => {
+            const wb = XLSX.utils.book_new();
+            const ws_data = [
+                ["学号", "姓名", "上次成绩", "本次成绩"]
+            ];
+            students.forEach(student => {
+                ws_data.push([student.id, student.name, "", ""]);
+            });
+            const ws = XLSX.utils.aoa_to_sheet(ws_data);
+            XLSX.utils.book_append_sheet(wb, ws, "成绩模板");
+            XLSX.writeFile(wb, '成绩模板.xlsx');
+        });
+        
+        // 应用设置
+        let weightS = 1;
+        let weightR = 1;
+        let creditLimit = 2;
+        document.getElementById('weightS').addEventListener('input', function() {
+            document.getElementById('weightS-value').textContent = this.value;
+        });
+        document.getElementById('weightR').addEventListener('input', function() {
+            document.getElementById('weightR-value').textContent = this.value;
+        });
+        document.getElementById('apply-settings').addEventListener('click', () => {
+            weightS = parseFloat(document.getElementById('weightS').value);
+            weightR = parseFloat(document.getElementById('weightR').value);
+            creditLimit = parseInt(document.getElementById('creditLimit').value);
+            alert('设置已更新。');
+        });
+        
+        // 计算学分变化
+        document.getElementById('calculate-credits').addEventListener('click', () => {
+            // 显示加载动画
+            document.getElementById('loading').style.display = 'block';
+            
+            // 使用setTimeout模拟异步处理，确保加载动画显示
+            setTimeout(() => {
+                // 获取所有学生的成绩
+                const studentData = students.map(student => {
+                    const lastScoreInput = document.querySelector(`.last-score[data-id="${student.id}"]`);
+                    const currentScoreInput = document.querySelector(`.current-score[data-id="${student.id}"]`);
+                    const lastScore = lastScoreInput.value === '' ? null : parseFloat(lastScoreInput.value);
+                    const currentScore = currentScoreInput.value === '' ? null : parseFloat(currentScoreInput.value);
+                    return {
+                        id: student.id,
+                        name: student.name,
+                        lastScore: lastScore,
+                        currentScore: currentScore,
+                        creditChange: null,
+                        deltaS: null,
+                        deltaR: null,
+                        lastRank: null,
+                        currentRank: null
+                    };
+                });
+                
+                // 处理缺考情况：如果任一考试缺考，则不计算学分变化
+                const validStudents = studentData.filter(s => s.lastScore !== null && s.currentScore !== null);
+                const absentStudents = studentData.filter(s => s.lastScore === null || s.currentScore === null);
+                
+                if (validStudents.length === 0) {
+                    alert('没有有效的成绩数据进行计算。');
+                    document.getElementById('loading').style.display = 'none';
+                    return;
+                }
+                
+                // 输入验证
+                let invalidInput = false;
+                validStudents.forEach(s => {
+                    if (isNaN(s.lastScore) || isNaN(s.currentScore)) {
+                        invalidInput = true;
+                    }
+                });
+                if (invalidInput) {
+                    alert('存在无效的成绩输入，请检查并重新输入。');
+                    document.getElementById('loading').style.display = 'none';
+                    return;
+                }
+                
+                // 计算ΔS
+                validStudents.forEach(s => {
+                    s.deltaS = s.currentScore - s.lastScore;
+                });
+                
+                // 计算排名，处理并列情况
+                validStudents.sort((a, b) => b.lastScore - a.lastScore);
+                assignRanks(validStudents, 'lastRank', 'lastScore');
+                validStudents.sort((a, b) => b.currentScore - a.currentScore);
+                assignRanks(validStudents, 'currentRank', 'currentScore');
+                
+                // 计算ΔR
+                validStudents.forEach(s => {
+                    s.deltaR = s.lastRank - s.currentRank;
+                });
+                
+                // 计算班级平均值和标准差
+                const deltaSValues = validStudents.map(s => s.deltaS);
+                const deltaRValues = validStudents.map(s => s.deltaR);
+                const meanDeltaS = average(deltaSValues);
+                const stdDeltaS = standardDeviation(deltaSValues, meanDeltaS);
+                const meanDeltaR = average(deltaRValues);
+                const stdDeltaR = standardDeviation(deltaRValues, meanDeltaR);
+                
+                // 处理标准差为零的情况
+                const adjustedStdDeltaS = stdDeltaS === 0 ? 1 : stdDeltaS;
+                const adjustedStdDeltaR = stdDeltaR === 0 ? 1 : stdDeltaR;
+                
+                // 标准化
+                validStudents.forEach(s => {
+                    s.zS = (s.deltaS - meanDeltaS) / adjustedStdDeltaS;
+                    s.zR = (s.deltaR - meanDeltaR) / adjustedStdDeltaR;
+                });
+                
+                // 计算Credit Change
+                validStudents.forEach(s => {
+                    let credit = weightS * s.zS + weightR * s.zR;
+                    // 四舍五入
+                    credit = Math.round(credit);
+                    // 限制学分变化范围
+                    if (credit > creditLimit) credit = creditLimit;
+                    if (credit < -creditLimit) credit = -creditLimit;
+                    s.creditChange = credit;
+                });
+                
+                // 更新表格显示
+                studentData.forEach(s => {
+                    const row = document.querySelector(`.last-score[data-id="${s.id}"]`).parentElement.parentElement;
+                    // 上次排名
+                    const lastRankCell = row.querySelector('.last-rank');
+                    if (s.lastScore === null) {
+                        lastRankCell.textContent = '-';
+                    } else {
+                        lastRankCell.textContent = s.lastRank;
+                    }
+                    // 本次排名
+                    const currentRankCell = row.querySelector('.current-rank');
+                    if (s.currentScore === null) {
+                        currentRankCell.textContent = '-';
+                    } else {
+                        currentRankCell.textContent = s.currentRank;
+                    }
+                    // 名次变化
+                    const rankChangeCell = row.querySelector('.rank-change');
+                    if (s.lastRank === null || s.currentRank === null) {
+                        rankChangeCell.textContent = '-';
+                        rankChangeCell.className = 'rank-change';
+                    } else {
+                        const deltaR = s.deltaR;
+                        if (deltaR > 0) {
+                            rankChangeCell.textContent = `↑ ${deltaR}`;
+                            rankChangeCell.className = 'rank-change rank-up';
+                        } else if (deltaR < 0) {
+                            rankChangeCell.textContent = `↓ ${Math.abs(deltaR)}`;
+                            rankChangeCell.className = 'rank-change rank-down';
+                        } else {
+                            rankChangeCell.textContent = '→ 0';
+                            rankChangeCell.className = 'rank-change rank-neutral';
+                        }
+                    }
+                    // 学分变化
+                    const creditCell = row.querySelector('.credit-change');
+                    if (s.lastScore === null || s.currentScore === null) {
+                        creditCell.textContent = '缺考';
+                        creditCell.className = 'credit-change';
+                    } else {
+                        const credit = validStudents.find(v => v.id === s.id).creditChange;
+                        creditCell.textContent = credit > 0 ? `+${credit}` : (credit < 0 ? `${credit}` : '0');
+                        if (credit > 0) {
+                            creditCell.className = 'credit-change credit-increase';
+                        } else if (credit < 0) {
+                            creditCell.className = 'credit-change credit-decrease';
+                        } else {
+                            creditCell.className = 'credit-change';
+                        }
+                    }
+                });
+                
+                // 生成学分变化分布图
+                generateCreditChart(validStudents);
+                
+                // 隐藏加载动画
+                document.getElementById('loading').style.display = 'none';
+                
+                alert('学分计算完成。');
+            }, 100); // 延迟100毫秒，确保加载动画显示
+        });
+        
+        // 导出结果为Excel
+        document.getElementById('export-results').addEventListener('click', () => {
+            const table = document.getElementById('scores-table');
+            const wb = XLSX.utils.table_to_book(table, { sheet: "Results" });
+            XLSX.writeFile(wb, '学分计算结果.xlsx');
+        });
+        
+        // 工具函数：计算平均值
+        function average(arr) {
+            const sum = arr.reduce((a, b) => a + b, 0);
+            return sum / arr.length;
+        }
+        
+        // 工具函数：计算标准差
+        function standardDeviation(arr, mean) {
+            const squaredDiffs = arr.map(value => Math.pow(value - mean, 2));
+            const avgSquaredDiff = average(squaredDiffs);
+            return Math.sqrt(avgSquaredDiff);
+        }
+        
+        // 工具函数：分配排名，处理并列情况
+        function assignRanks(sortedStudents, rankProperty, scoreProperty) {
+            let rank = 1;
+            let prevScore = null;
+            let sameRankCount = 0;
+            sortedStudents.forEach((student, index) => {
+                const score = student[scoreProperty];
+                if (prevScore === null || score !== prevScore) {
+                    rank += sameRankCount;
+                    student[rankProperty] = rank;
+                    sameRankCount = 1;
+                } else {
+                    student[rankProperty] = rank;
+                    sameRankCount++;
+                }
+                prevScore = score;
+            });
+        }
+        
+        // 生成学分变化分布图
+        let creditChart; // 全局变量
+        function generateCreditChart(validStudents) {
+            const ctx = document.getElementById('creditChart').getContext('2d');
+            const creditChanges = validStudents.map(s => s.creditChange);
+            const creditLabels = [...new Set(creditChanges)].sort((a, b) => a - b);
+            const creditCounts = creditLabels.map(label => creditChanges.filter(c => c === label).length);
+            
+            // 如果图表已经存在，销毁它
+            if (creditChart) {
+                creditChart.destroy();
+            }
+            
+            creditChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: creditLabels.map(label => label > 0 ? `+${label}` : label),
+                    datasets: [{
+                        label: '学分变化人数',
+                        data: creditCounts,
+                        backgroundColor: creditLabels.map(label => {
+                            if (label > 0) return 'rgba(75, 192, 192, 0.6)'; // 绿色
+                            if (label < 0) return 'rgba(255, 99, 132, 0.6)'; // 红色
+                            return 'rgba(201, 203, 207, 0.6)'; // 灰色
+                        }),
+                        borderColor: creditLabels.map(label => {
+                            if (label > 0) return 'rgba(75, 192, 192, 1)';
+                            if (label < 0) return 'rgba(255, 99, 132, 1)';
+                            return 'rgba(201, 203, 207, 1)';
+                        }),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '人数'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: '学分变化'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: false,
+                            text: '学分变化分布图'
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 初始化表格
+        initializeTable();
+    </script>
+</body>
+</html>
