@@ -3,6 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>高一1班学分计算系统</title>
+
+     /* 
+                 　　 　▃▆█▇▄▖
+               　　 　▟◤▖　　　◥█▎
+              　　　◢◤　 ▐　　　　▐▉
+              　▗◤　　　▂　▗▖　　▕█▎
+              　◤　▗▅▖◥▄　▀◣　　█▊
+              ▐　▕▎◥▖◣◤　　　　◢██
+              █◣　◥▅█▀　　　　▐██◤
+              ▐█▙▂　　　 ◢██◤
+              　◥██◣　　　　◢▄◤
+                     ▀██▅▇▀
+              
+    
+    */
+
+    <!-- 为什么来看源代码？怕我搞后门？不信我绝交了呜呜呜呜呜呜呜呜呜呜呜呜呜呜呜-->
+
+    
     <!-- 引入Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- 引入Font Awesome用于图标 -->
@@ -134,8 +153,6 @@
                 <img src="3.jpg" alt="算法图示3" class="img-fluid img-thumbnail" data-toggle="modal" data-target="#imageModal3">
             </div>
         </div>
-
-        <!-- 模态框 -->
         <div class="modal fade" id="imageModal1" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -232,7 +249,7 @@
     
     <!-- 主脚本 -->
     <script>
-        // 学生名单
+        // 名单
         const students = [
             { id: 1, name: "蔡克一" },
             { id: 2, name: "陈爱嘉" },
@@ -544,7 +561,7 @@
                 document.getElementById('loading').style.display = 'none';
                 
                 alert('学分计算完成。');
-            }, 100); // 延迟100毫秒，确保加载动画显示
+            }, 100); // 延迟100毫秒，确保加载动画显示，没啥用
         });
         
         // 导出结果为Excel
@@ -594,7 +611,7 @@
             const creditLabels = [...new Set(creditChanges)].sort((a, b) => a - b);
             const creditCounts = creditLabels.map(label => creditChanges.filter(c => c === label).length);
             
-            // 如果图表已经存在，销毁它
+            // 如果图表已经存在，把它杀掉，通通杀掉
             if (creditChart) {
                 creditChart.destroy();
             }
