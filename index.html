@@ -101,23 +101,31 @@
             </div>
         </div>
         
-        <!-- 学分算法说明 -->
-        <div class="collapse mb-4" id="algorithmExplanation">
-            <div class="card card-body">
-                <h5>学分计算算法说明</h5>
-                <p>本系统根据绩变化（ΔS）和排名变化（ΔR）来决定学分的增减。具体步骤如下：</p>
-                <ol>
-                    <li><strong>成绩变化（ΔS）</strong>：本次成绩与上次成绩的差值。</li>
-                    <li><strong>排名变化（ΔR）</strong>：上次排名与本次排名的差值。ΔR为正表示排名上升（名次变好），为负表示排名下降。</li>
-                    <li><strong>标准化处理</strong>：将所有人的ΔS和ΔR进行标准化，计算每人的z-score。</li>
-                    <li><strong>权重应用</strong>：根据设定的成绩变化权重（w<sub>S</sub>）和排名变化权重（w<sub>R</sub>），计算综合得分：</li>
-                    <pre>Credit Change = Round(w<sub>S</sub> × z<sub>S</sub> + w<sub>R</sub> × z<sub>R</sub>)</pre>
-                    <li><strong>学分变化限制</strong>：将计算结果限制在设定的极限值范围内（例如，±10学分）。</li>
-                    <li><strong>结果展示</strong>：学分增加用绿色标记，减少用红色标记，缺考不受影响。</li>
-                </ol>
-                <p>此算法确保了学分的增减不仅反映了个人的进步或退步，还综合考虑了班级整体的表现变化。即同时考虑成绩和排名变化抵消考试难易度差异的影响，通过调整权重系数和学分上限适应不同考试情况，不会出现第一名加分永远最多，最后一名加分永远最少的情况</p>
-            </div>
+        <!-->
+<div class="collapse mb-4" id="algorithmExplanation">
+    <div class="card card-body">
+        <h5>学分计算算法说明</h5>
+        <p>本系统根据绩变化（ΔS）和排名变化（ΔR）来决定学分的增减。具体步骤如下：</p>
+        <ol>
+            <li><strong>成绩变化（ΔS）</strong>：本次成绩与上次成绩的差值。</li>
+            <li><strong>排名变化（ΔR）</strong>：上次排名与本次排名的差值。ΔR为正表示排名上升（名次变好），为负表示排名下降。</li>
+            <li><strong>标准化处理</strong>：将所有人的ΔS和ΔR进行标准化，计算每人的z-score。</li>
+            <li><strong>权重应用</strong>：根据设定的成绩变化权重（w<sub>S</sub>）和排名变化权重（w<sub>R</sub>），计算综合得分：</li>
+            <pre>Credit Change = Round(w<sub>S</sub> × z<sub>S</sub> + w<sub>R</sub> × z<sub>R</sub>)</pre>
+            <li><strong>学分变化限制</strong>：将计算结果限制在设定的极限值范围内（例如，±10学分）。</li>
+            <li><strong>结果展示</strong>：学分增加用绿色标记，减少用红色标记，缺考不受影响。</li>
+        </ol>
+        <p>此算法确保了学分的增减不仅反映了个人的进步或退步，还综合考虑了班级整体的表现变化。即同时考虑成绩和排名变化抵消考试难易度差异的影响，通过调整权重系数和学分上限适应不同考试情况，不会出现第一名加分永远最多，最后一名加分永远最少的情况</p>
+        
+        <!-- 插入图片 -->
+        <div class="text-center">
+            <img src="1.jpg" alt="算法图示1" class="img-fluid mb-3">
+            <img src="2.jpg" alt="算法图示2" class="img-fluid mb-3">
+            <img src="3.jpg" alt="算法图示3" class="img-fluid mb-3">
         </div>
+    </div>
+</div>
+
         
         <!-- 成绩输入表格 -->
         <div class="table-responsive mb-4">
