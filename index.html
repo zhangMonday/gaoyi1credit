@@ -2,23 +2,23 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>高一1班学分计算系统</title>
+
+
 
     <!-- 为什么来看源代码？怕我搞后门？不信我绝交了呜呜呜呜呜呜呜呜呜呜呜呜呜呜呜-->
 
-    <!-- 引入Bootstrap 5 CSS -->
+    
+    <!-- 引入Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- 引入Font Awesome用于图标 -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- 引入Chart.js用于图表 -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- 引入了Bootstrap的CSS和JavaScript库，以及jQuery，以支持算法图示 -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- SheetJS用于Excel导入导出 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <style>
         body {
@@ -63,26 +63,6 @@
         .chart-container {
             margin-top: 40px;
         }
-        /* 调整表格字体和按钮大小以适应移动端 */
-        @media (max-width: 576px) {
-            h1 {
-                font-size: 1.5rem;
-            }
-            .btn {
-                font-size: 0.9rem;
-                padding: 0.5rem 0.75rem;
-            }
-            .form-label {
-                font-size: 0.9rem;
-            }
-            .table th, .table td {
-                font-size: 0.8rem;
-                padding: 0.4rem;
-            }
-            .slider-label span {
-                display: block;
-            }
-        }
     </style>
 </head>
 <body>
@@ -97,15 +77,15 @@
             <div class="card-header">参数设置（如果觉得学分变化都太接近拉不开差距，可以同步增大两个权重的值再计算）</div>
             <div class="card-body">
                 <form id="settings-form" class="row g-3">
-                    <div class="col-md-4 col-sm-6">
+                    <div class="col-md-4">
                         <label for="weightS" class="form-label slider-label">成绩变化权重 （分数优先）: <span id="weightS-value">1</span></label>
                         <input type="range" class="form-range" id="weightS" min="0" max="5" step="0.1" value="1">
                     </div>
-                    <div class="col-md-4 col-sm-6">
+                    <div class="col-md-4">
                         <label for="weightR" class="form-label slider-label">排名变化权重（名次优先）: <span id="weightR-value">1</span></label>
                         <input type="range" class="form-range" id="weightR" min="0" max="5" step="0.1" value="1">
                     </div>
-                    <div class="col-md-4 col-sm-12">
+                    <div class="col-md-4">
                         <label for="creditLimit" class="form-label">学分变化极限值</label>
                         <input type="number" class="form-control" id="creditLimit" value="10" min="1">
                         <div class="form-text">例如：最大±10学分</div>
@@ -118,92 +98,98 @@
         </div>
         
         <!-- 数据导入导出 -->
-        <div class="mb-4 d-flex flex-wrap justify-content-between align-items-center">
-            <div class="mb-2">
-                <button class="btn btn-success me-2 mb-2" id="import-excel"><i class="fa fa-file-import"></i> 从Excel导入成绩</button>
-                <button class="btn btn-info mb-2" id="export-results"><i class="fa fa-file-export"></i> 导出计算结果为Excel</button>
+        <div class="mb-4 d-flex justify-content-between">
+            <div>
+                <button class="btn btn-success me-2" id="import-excel"><i class="fa fa-file-import"></i> 从Excel导入成绩</button>
+                <button class="btn btn-info" id="export-results"><i class="fa fa-file-export"></i> 导出计算结果为Excel</button>
             </div>
-            <div class="mb-2">
-                <button class="btn btn-secondary mb-2" id="download-template"><i class="fa fa-download"></i> 下载Excel模板</button>
+            <div>
+                <button class="btn btn-secondary" id="download-template"><i class="fa fa-download"></i> 下载Excel模板</button>
                 <!-- 解释按钮 -->
-                <button class="btn btn-outline-info ms-2 mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#algorithmExplanation" aria-expanded="false" aria-controls="algorithmExplanation">
+                <button class="btn btn-outline-info ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#algorithmExplanation" aria-expanded="false" aria-controls="algorithmExplanation">
                     <i class="fa fa-info-circle"></i> 学分算法说明
                 </button>
             </div>
         </div>
         
-        <!-- 学分算法说明 -->
-        <div class="collapse mb-4" id="algorithmExplanation">
-            <div class="card card-body">
-                <h5>学分计算算法说明</h5>
-                <p>本系统根据绩变化（ΔS）和排名变化（ΔR）来决定学分的增减。具体步骤如下：</p>
-                <ol>
-                    <li><strong>成绩变化（ΔS）</strong>：本次成绩与上次成绩的差值。</li>
-                    <li><strong>排名变化（ΔR）</strong>：上次排名与本次排名的差值。ΔR为正表示排名上升（名次变好），为负表示排名下降。</li>
-                    <li><strong>标准化处理</strong>：将所有人的ΔS和ΔR进行标准化，计算每人的z-score。</li>
-                    <li><strong>权重应用</strong>：根据设定的成绩变化权重（w<sub>S</sub>）和排名变化权重（w<sub>R</sub>），计算综合得分：</li>
-                    <pre>Credit Change = Round(w<sub>S</sub> × z<sub>S</sub> + w<sub>R</sub> × z<sub>R</sub>)</pre>
-                    <li><strong>学分变化限制</strong>：将计算结果限制在设定的极限值范围内（例如，±10学分）。</li>
-                    <li><strong>结果展示</strong>：学分增加用绿色标记，减少用红色标记，缺考不受影响。</li>
-                </ol>
-                <p>此算法确保了学分的增减不仅反映了个人的进步或退步，还综合考虑了班级整体的表现变化。即同时考虑成绩和排名变化抵消考试难易度差异的影响，通过调整权重系数和学分上限适应不同考试情况，不会出现第一名加分永远最多，最后一名加分永远最少的情况。</p>
-                
-                <!-- 插入图片，并使用 Bootstrap 网格系统 -->
-                <div class="row text-center">
-                    <div class="col-12 col-md-4 mb-3">
-                        <img src="1.jpg" alt="算法图示1" class="img-fluid img-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal1" style="cursor:pointer;">
+        <!-->
+<div class="collapse mb-4" id="algorithmExplanation">
+    <div class="card card-body">
+        <h5>学分计算算法说明</h5>
+        <p>本系统根据绩变化（ΔS）和排名变化（ΔR）来决定学分的增减。具体步骤如下：</p>
+        <ol>
+            <li><strong>成绩变化（ΔS）</strong>：本次成绩与上次成绩的差值。</li>
+            <li><strong>排名变化（ΔR）</strong>：上次排名与本次排名的差值。ΔR为正表示排名上升（名次变好），为负表示排名下降。</li>
+            <li><strong>标准化处理</strong>：将所有人的ΔS和ΔR进行标准化，计算每人的z-score。</li>
+            <li><strong>权重应用</strong>：根据设定的成绩变化权重（w<sub>S</sub>）和排名变化权重（w<sub>R</sub>），计算综合得分：</li>
+            <pre>Credit Change = Round(w<sub>S</sub> × z<sub>S</sub> + w<sub>R</sub> × z<sub>R</sub>)</pre>
+            <li><strong>学分变化限制</strong>：将计算结果限制在设定的极限值范围内（例如，±10学分）。</li>
+            <li><strong>结果展示</strong>：学分增加用绿色标记，减少用红色标记，缺考不受影响。</li>
+        </ol>
+        <p>此算法确保了学分的增减不仅反映了个人的进步或退步，还综合考虑了班级整体的表现变化。即同时考虑成绩和排名变化抵消考试难易度差异的影响，通过调整权重系数和学分上限适应不同考试情况，不会出现第一名加分永远最多，最后一名加分永远最少的情况</p>
+        
+        <!-- 插入图片，并使用 Bootstrap 网格系统 -->
+        <div class="row text-center">
+            <div class="col-4">
+                <img src="1.jpg" alt="算法图示1" class="img-fluid img-thumbnail" data-toggle="modal" data-target="#imageModal1">
+            </div>
+            <div class="col-4">
+                <img src="2.jpg" alt="算法图示2" class="img-fluid img-thumbnail" data-toggle="modal" data-target="#imageModal2">
+            </div>
+            <div class="col-4">
+                <img src="3.jpg" alt="算法图示3" class="img-fluid img-thumbnail" data-toggle="modal" data-target="#imageModal3">
+            </div>
+        </div>
+        <div class="modal fade" id="imageModal1" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="imageModalLabel1">算法图示1</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                    <div class="col-12 col-md-4 mb-3">
-                        <img src="2.jpg" alt="算法图示2" class="img-fluid img-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal2" style="cursor:pointer;">
-                    </div>
-                    <div class="col-12 col-md-4 mb-3">
-                        <img src="3.jpg" alt="算法图示3" class="img-fluid img-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal3" style="cursor:pointer;">
-                    </div>
-                </div>
-                <!-- 模态框1 -->
-                <div class="modal fade" id="imageModal1" tabindex="-1" aria-labelledby="imageModalLabel1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="imageModalLabel1">算法图示1</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
-                            </div>
-                            <div class="modal-body">
-                                <img src="1.jpg" alt="算法图示1" class="img-fluid">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- 模态框2 -->
-                <div class="modal fade" id="imageModal2" tabindex="-1" aria-labelledby="imageModalLabel2" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="imageModalLabel2">算法图示2</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
-                            </div>
-                            <div class="modal-body">
-                                <img src="2.jpg" alt="算法图示2" class="img-fluid">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- 模态框3 -->
-                <div class="modal fade" id="imageModal3" tabindex="-1" aria-labelledby="imageModalLabel3" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="imageModalLabel3">算法图示3</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
-                            </div>
-                            <div class="modal-body">
-                                <img src="3.jpg" alt="算法图示3" class="img-fluid">
-                            </div>
-                        </div>
+                    <div class="modal-body">
+                        <img src="1.jpg" alt="算法图示1" class="img-fluid">
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="imageModal2" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel2" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="imageModalLabel2">算法图示2</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <img src="2.jpg" alt="算法图示2" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="imageModal3" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel3" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="imageModalLabel3">算法图示3</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <img src="3.jpg" alt="算法图示3" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
         
         <!-- 成绩输入表格 -->
         <div class="table-responsive mb-4">
@@ -243,21 +229,28 @@
         </div>
     </div>
     
+    <!-- 引入必要的JS库 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SheetJS用于Excel导入导出 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
     <!-- 主脚本 -->
     <script>
-        /* 
-                ▃▆█▇▄▖
-            ▟◤▖　　　◥█▎
-           ◢◤　 ▐　　　　▐▉
-          ▗◤　　　▂　▗▖　　▕█▎
-          ◤　▗▅▖◥▄　▀◣　　█▊
-          ▐　▕▎◥▖◣◤　　　　◢██
-          █◣　◥▅█▀　　　　▐██◤
-          ▐█▙▂　　　 ◢██◤
-          　◥██◣　　　　◢▄◤
-                 ▀██▅▇▀
-        */
-        
+             /* 
+                 　　 　▃▆█▇▄▖
+               　　 　▟◤▖　　　◥█▎
+              　　　◢◤　 ▐　　　　▐▉
+              　▗◤　　　▂　▗▖　　▕█▎
+              　◤　▗▅▖◥▄　▀◣　　█▊
+              ▐　▕▎◥▖◣◤　　　　◢██
+              █◣　◥▅█▀　　　　▐██◤
+              ▐█▙▂　　　 ◢██◤
+              　◥██◣　　　　◢▄◤
+                     ▀██▅▇▀
+              
+    
+    */
+    
         // 名单
         const students = [
             { id: 1, name: "蔡克一" },
@@ -303,7 +296,7 @@
             { id: 42, name: "袁梦如" },
             { id: 43, name: "张厚涵" },
             { id: 44, name: "张璟雯" },
-            { id: 45, name: "**" },
+            { id: 45, name: "张毅" },
             { id: 46, name: "张周一" },
             { id: 47, name: "周灿" },
             { id: 48, name: "周孝儒" },
@@ -647,7 +640,6 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false,
                     scales: {
                         y: {
                             beginAtZero: true,
