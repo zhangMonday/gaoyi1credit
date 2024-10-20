@@ -220,7 +220,7 @@
         
         <!-- 图表容器 -->
         <div class="chart-container">
-            <h3 class="text-center">学分变化分布图</h3>
+            <h3 class="text-center">学分变化分布图（会在计算出学分后显示）</h3>
             <canvas id="creditChart"></canvas>
         </div>
     </div>
@@ -330,7 +330,7 @@
             // 假设Excel第一行为表头，后续行为数据
             // 表头应包含：学号, 姓名, 上次成绩, 本次成绩
             if (data.length < 2) {
-                alert('Excel文件没有足够的数据。');
+                alert('Excel文件没有足够的数据，再检查下，要用旁边下载按钮的模版来导入');
                 return;
             }
             const header = data[0];
@@ -356,7 +356,7 @@
                     currentScoreInput.value = currentScore;
                 }
             }
-            alert('成绩已成功导入！');
+            alert('成绩已成功导入！  (*^o^*)  ');
         }
         
         // 下载模板
@@ -387,7 +387,7 @@
             weightS = parseFloat(document.getElementById('weightS').value);
             weightR = parseFloat(document.getElementById('weightR').value);
             creditLimit = parseInt(document.getElementById('creditLimit').value);
-            alert('设置已更新。');
+            alert('设置已更新。( ´▽｀)');
         });
         
         // 计算学分变化
@@ -421,7 +421,7 @@
                 const absentStudents = studentData.filter(s => s.lastScore === null || s.currentScore === null);
                 
                 if (validStudents.length === 0) {
-                    alert('没有有效的成绩数据进行计算。');
+                    alert('没有有效的成绩数据进行计算( Ĭ ^ Ĭ )');
                     document.getElementById('loading').style.display = 'none';
                     return;
                 }
@@ -434,7 +434,7 @@
                     }
                 });
                 if (invalidInput) {
-                    alert('存在无效的成绩输入，请检查并重新输入。');
+                    alert('存在无效的成绩输入，请检查并重新输入。( Ĭ ^ Ĭ )');
                     document.getElementById('loading').style.display = 'none';
                     return;
                 }
