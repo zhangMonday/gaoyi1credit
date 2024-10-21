@@ -49,16 +49,6 @@
         .rank-neutral {
             color: gray;
         }
-        /* 进度条样式 */
-        #loading {
-            display: none;
-            position: fixed;
-            z-index: 999;
-            height: 100%;
-            width: 100%;
-            overflow: visible;
-            background: rgba(255,255,255,0.8) url('https://i.imgur.com/LLF5iyg.gif') no-repeat center center;
-        }
         /* 图表容器样式 */
         .chart-container {
             margin-top: 40px;
@@ -66,9 +56,7 @@
     </style>
 </head>
 <body>
-    <!-- 进度条 -->
-    <div id="loading"></div>
-
+ 
     <div class="container">
         <h1 class="mb-4 text-center">高一1班学分计算系统(Beta) BY ZZY</h1>
         
@@ -410,11 +398,7 @@
         
         // 计算学分变化
         document.getElementById('calculate-credits').addEventListener('click', () => {
-            // 显示加载动画
-            document.getElementById('loading').style.display = 'block';
             
-            // 使用setTimeout模拟异步处理，确保加载动画显示
-            setTimeout(() => {
                 // 获取所有学生的成绩
                 const studentData = students.map(student => {
                     const lastScoreInput = document.querySelector(`.last-score[data-id="${student.id}"]`);
@@ -558,11 +542,7 @@
                 // 生成学分变化分布图
                 generateCreditChart(validStudents);
                 
-                // 隐藏加载动画
-                document.getElementById('loading').style.display = 'none';
-                
                 alert('学分计算完成。');
-            }, 100); // 延迟100毫秒，确保加载动画显示，没啥用
         });
         
         // 导出结果为Excel
