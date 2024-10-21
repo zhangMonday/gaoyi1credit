@@ -669,11 +669,11 @@
         
         // 初始化表格
         initializeTable();
-        // 初始化滑块显示值
-document.getElementById('weightS').value = weightS;
-document.getElementById('weightS-value').textContent = weightS;
-document.getElementById('weightR').value = weightR;
-document.getElementById('weightR-value').textContent = weightR;
+        // bug修复：初始化滑块显示值
+        document.getElementById('weightS').value = weightS;
+        document.getElementById('weightS-value').textContent = weightS;
+        document.getElementById('weightR').value = weightR;
+        document.getElementById('weightR-value').textContent = weightR;
 
     </script>
 </body>
