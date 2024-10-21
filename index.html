@@ -79,11 +79,11 @@
                 <form id="settings-form" class="row g-3">
                     <div class="col-md-4">
                         <label for="weightS" class="form-label slider-label">成绩变化权重 （分数优先）: <span id="weightS-value">1</span></label>
-                        <input type="range" class="form-range" id="weightS" min="0" max="5" step="0.1" value="1">
+                        <input type="range" class="form-range" id="weightS" min="0" max="5" step="0.1" value="1.5">
                     </div>
                     <div class="col-md-4">
                         <label for="weightR" class="form-label slider-label">排名变化权重（名次优先）: <span id="weightR-value">1</span></label>
-                        <input type="range" class="form-range" id="weightR" min="0" max="5" step="0.1" value="1">
+                        <input type="range" class="form-range" id="weightR" min="0" max="5" step="0.1" value="1.5">
                     </div>
                     <div class="col-md-4">
                         <label for="creditLimit" class="form-label">学分变化极限值</label>
@@ -392,9 +392,9 @@
         });
         
         // 应用设置
-        let weightS = 1;
-        let weightR = 1;
-        let creditLimit = 2;
+        let weightS = 1.5;
+        let weightR = 1.5;
+        let creditLimit = 10;
         document.getElementById('weightS').addEventListener('input', function() {
             document.getElementById('weightS-value').textContent = this.value;
         });
