@@ -3,8 +3,7 @@ name: Sync to OSS
 on:
   push:
     branches:
-      - main  # 选择您希望触发同步的分支
-
+      - main
 jobs:
   sync:
     runs-on: ubuntu-latest
