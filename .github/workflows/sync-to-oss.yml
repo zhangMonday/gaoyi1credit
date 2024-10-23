@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
   deploy:
@@ -27,4 +28,3 @@ jobs:
       - name: Sync files to OSS
         run: |
           ossutil rsync ./ oss://${{ secrets.OSS_BUCKET }}/ --delete
-
