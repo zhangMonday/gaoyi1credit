@@ -23,7 +23,7 @@ jobs:
 
       - name: Verify OSS CLI Installation
         run: |
-          ossutil version  # 验证 ossutil 是否安装成功
+          ossutil help  # 使用 help 命令检查安装是否成功
 
       - name: Configure OSS CLI
         run: |
