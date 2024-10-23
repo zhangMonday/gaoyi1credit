@@ -16,10 +16,14 @@ jobs:
 
       - name: Install OSS CLI
         run: |
-          curl -o ossutil.zip https://gosspublic.alicdn.com/ossutil/1.7.0/ossutil64.zip
-          unzip ossutil.zip
-          sudo mv ossutil64 /usr/local/bin/ossutil
-          chmod 755 /usr/local/bin/ossutil
+          curl -o ossutil.zip https://gosspublic.alicdn.com/ossutil/1.7.19/ossutil-v1.7.19-linux-amd64.zip  # 下载最新的 Linux 版本
+          unzip ossutil.zip  # 解压到当前目录
+          sudo mv ossutil-v1.7.19-linux-amd64/ossutil /usr/local/bin/ossutil  # 移动到正确的位置
+          sudo chmod 755 /usr/local/bin/ossutil
+
+      - name: Verify OSS CLI Installation
+        run: |
+          ossutil help  # 使用 help 命令检查安装是否成功
 
       - name: Configure OSS CLI
         run: |
@@ -27,4 +31,4 @@ jobs:
 
       - name: Sync files to OSS
         run: |
-          ossutil rsync ./path/to/your/files oss://${{ secrets.OSS_BUCKET }}/ --delete
+          ossutil sync ./ oss://${{ secrets.OSS_BUCKET }}/ --delete  # 使用 sync 命令同步文件
