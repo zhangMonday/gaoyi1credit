@@ -18,7 +18,7 @@ jobs:
         run: |
           curl -o ossutil.zip https://gosspublic.alicdn.com/ossutil/1.7.0/ossutil64.zip
           unzip ossutil.zip
-          sudo mv ossutil64 /usr/local/bin/ossutil
+          sudo mv ossutil64/ossutil /usr/local/bin/ossutil  # 移动到正确的位置
           sudo chmod 755 /usr/local/bin/ossutil
 
       - name: Verify OSS CLI Installation
