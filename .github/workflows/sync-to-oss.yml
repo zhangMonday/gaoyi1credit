@@ -3,7 +3,7 @@ name: Deploy to Aliyun OSS
 on:
   push:
     branches:
-      - main
+      - main  # 当推送到 main 分支时自动触发
   workflow_dispatch:  # 允许手动触发
 
 jobs:
@@ -19,7 +19,11 @@ jobs:
           curl -o ossutil.zip https://gosspublic.alicdn.com/ossutil/1.7.0/ossutil64.zip
           unzip ossutil.zip
           sudo mv ossutil64 /usr/local/bin/ossutil
-          chmod 755 /usr/local/bin/ossutil
+          sudo chmod 755 /usr/local/bin/ossutil
+
+      - name: Verify OSS CLI Installation
+        run: |
+          ossutil version  # 验证 ossutil 是否安装成功
 
       - name: Configure OSS CLI
         run: |
