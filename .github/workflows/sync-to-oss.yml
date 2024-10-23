@@ -34,6 +34,10 @@ jobs:
           echo "OSS_REGION: ${{ secrets.OSS_REGION }}"
           echo "OSS_BUCKET: ${{ secrets.OSS_BUCKET }}"
 
+      - name: List OSS Bucket
+        run: |
+          ossutil ls oss://${{ secrets.OSS_BUCKET }}/  # 列出存储桶中的文件
+
       - name: Sync files to OSS
         run: |
           ossutil sync ./ oss://${{ secrets.OSS_BUCKET }}/ --delete  # 使用 sync 命令同步文件
