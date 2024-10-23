@@ -2,6 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>高一1班学分计算系统</title>
 
 
@@ -21,38 +23,124 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" defer></script>
 
     <style>
-        body {
-            padding: 20px;
-            background-color: #f8f9fa;
-        }
-        .credit-increase {
-            color: green;
-            font-weight: bold;
-        }
-        .credit-decrease {
-            color: red;
-            font-weight: bold;
+      body {
+        padding: 20px;
+        background-color: #f8f9fa;
+        font-family: Arial, sans-serif;
+    }
+
+    .credit-increase {
+        color: green;
+        font-weight: bold;
+    }
+
+    .credit-decrease {
+        color: red;
+        font-weight: bold;
+    }
+
+    .table-responsive {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    .slider-label {
+        margin-bottom: 5px;
+        display: block;
+        font-weight: 500;
+    }
+
+    .rank-up {
+        color: green;
+    }
+
+    .rank-down {
+        color: red;
+    }
+
+    .rank-neutral {
+        color: gray;
+    }
+
+    /* 图表容器样式 */
+    .chart-container {
+        margin-top: 40px;
+    }
+
+    /* 预留空间，减少布局偏移 */
+    img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    /* 优化表格样式 */
+    table {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        text-align: center;
+        padding: 8px;
+        border: 1px solid #dee2e6;
+    }
+
+    th {
+        background-color: #f1f1f1;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    /* 按钮样式优化 */
+    .btn {
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+    }
+
+    /* 响应式设计优化 */
+    @media (max-width: 768px) {
+        .slider-label {
+            font-size: 14px;
         }
         .table-responsive {
-            max-height: 600px;
-            overflow-y: auto;
+            max-height: 400px;
         }
-        .slider-label {
-            margin-bottom: 5px;
+        h1 {
+            font-size: 1.5rem;
         }
-        .rank-up {
-            color: green;
-        }
-        .rank-down {
-            color: red;
-        }
-        .rank-neutral {
-            color: gray;
-        }
-        /* 图表容器样式 */
-        .chart-container {
-            margin-top: 40px;
-        }
+    }
+
+    /* 模态框图片优化 */
+    .modal-body img {
+        width: 100%;
+        height: auto;
+    }
+
+    /* 更新日志样式 */
+    #update-log .list-group-item {
+        font-size: 0.95rem;
+    }
+
+    /* 警告框样式 */
+    .alert-info {
+        font-size: 0.95rem;
+    }
+
+    /* 链接按钮样式 */
+    .btn-outline-primary img {
+        vertical-align: middle;
+    }
     </style>
 </head>
 <body>
