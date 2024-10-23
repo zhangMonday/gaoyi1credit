@@ -29,6 +29,11 @@ jobs:
         run: |
           ossutil config -e ${{ secrets.OSS_REGION }} -i ${{ secrets.ALIYUN_ACCESS_KEY_ID }} -k ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
 
+      - name: Debug OSS Config
+        run: |
+          echo "OSS_REGION: ${{ secrets.OSS_REGION }}"
+          echo "OSS_BUCKET: ${{ secrets.OSS_BUCKET }}"
+
       - name: Sync files to OSS
         run: |
           ossutil sync ./ oss://${{ secrets.OSS_BUCKET }}/ --delete  # 使用 sync 命令同步文件
