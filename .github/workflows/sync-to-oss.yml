@@ -1,46 +1,30 @@
-name: Sync to OSS
+name: Deploy to Aliyun OSS
 
 on:
   push:
     branches:
-      - main 
-  workflow_dispatch:  # 允许手动触发工作流
+      - main
 
 jobs:
-  sync:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
-      - name: Install oss2
-        run: pip install oss2
-
-      - name: Sync to OSS
-        env:
-          ALIYUN_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
-          ALIYUN_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
-          ALIYUN_OSS_BUCKET: ${{ secrets.ALIYUN_OSS_BUCKET }}
-          ALIYUN_OSS_ENDPOINT: ${{ secrets.ALIYUN_OSS_ENDPOINT }}
+      - name: Install OSS CLI
         run: |
-          python - <<EOF
-          import oss2
-          import os
-          from pathlib import Path
+          curl -o ossutil.zip https://gosspublic.alicdn.com/ossutil/1.7.0/ossutil64.zip
+          unzip ossutil.zip
+          sudo mv ossutil64 /usr/local/bin/ossutil
+          chmod 755 /usr/local/bin/ossutil
 
-          # Initialize OSS client
-          auth = oss2.Auth(os.getenv('ALIYUN_ACCESS_KEY_ID'), os.getenv('ALIYUN_ACCESS_KEY_SECRET'))
-          bucket = oss2.Bucket(auth, os.getenv('ALIYUN_OSS_ENDPOINT'), os.getenv('ALIYUN_OSS_BUCKET'))
+      - name: Configure OSS CLI
+        run: |
+          ossutil config -e ${{ secrets.OSS_REGION }} -i ${{ secrets.ALIYUN_ACCESS_KEY_ID }} -k ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
 
-          # Sync files
-          local_path = Path('.')
-          for file in local_path.rglob('*'):
-              if file.is_file():
-                  bucket.put_object_from_file(str(file.relative_to(local_path)), str(file))
-                  print(f'Synced {file} to OSS')
-          EOF
+      - name: Sync files to OSS
+        run: |
+          ossutil rsync ./ oss://${{ secrets.OSS_BUCKET }}/ --delete
+
