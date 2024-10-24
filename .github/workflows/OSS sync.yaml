@@ -15,13 +15,17 @@ jobs:
         npm install
         npm install -g hexo-cli
         hexo generate
+    
     - name: Set up ossutil
       run: |
         # 下载 ossutil
         curl -o ossutil64 http://gosspublic.alicdn.com/ossutil/1.6.7/ossutil64
         chmod +x ossutil64
-        mv ossutil64 /home/runner/work/_actions/manyuanrong/setup-ossutil/v1.0/.bin/ossutil
-        echo "/home/runner/work/_actions/manyuanrong/setup-ossutil/v1.0/.bin" >> $GITHUB_PATH
+        
+        # 创建 .bin 目录并移动 ossutil
+        mkdir -p $HOME/.local/bin
+        mv ossutil64 $HOME/.local/bin/ossutil
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
 
     - name: Configure ossutil
       run: |
