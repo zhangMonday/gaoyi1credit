@@ -25,4 +25,4 @@ jobs:
         ossutil config -e oss-cn-hongkong.aliyuncs.com -i ${{ secrets.ACCESS_KEY_ID }} -k ${{ secrets.ACCESS_KEY_SECRET }} -L CH
 
     - name: Deploy To OSS
-      run: ossutil cp . oss://enok-blog/ --recursive --exclude ".git/*"
+      run: ossutil cp . oss://gaoyi1creditwebpage/ --recursive --exclude ".git/*"
