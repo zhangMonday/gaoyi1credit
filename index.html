@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' cdn.jsdelivr.net cdnjs.cloudflare.com; style-src 'self' cdn.jsdelivr.net cdnjs.cloudflare.com 'unsafe-inline'; img-src 'self' data: credit1.zhangmonday.top;">
 
     <title>高一1班学分计算系统</title>
 
@@ -15,7 +14,7 @@
 
  <style>
  
-        body {
+       body {
             padding: 20px;
             background-color: #f8f9fa;
             font-family: Arial, sans-serif;
@@ -136,11 +135,11 @@
     </style>
 
     <!-- 延迟加载非关键CSS：Font Awesome 和 Bootstrap 5.3.0 -->
-    <link href="https://credit.zhangmondaynb.workers.dev/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://credit.zhangmondaynb.workers.dev/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"></noscript>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"></noscript>
 
-    <link href="https://credit.zhangmondaynb.workers.dev/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://credit.zhangmondaynb.workers.dev/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"></noscript>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"></noscript>
 </head>
 <body>
  
@@ -224,7 +223,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <img src="1.webp" alt="算法图示1" class="img-fluid img-thumbnail" loading="lazy" data-toggle="modal" data-target="#imageModal1">
+                        <img src="1.webp" alt="算法图示1" class="img-fluid">
                     </div>
                 </div>
             </div>
@@ -240,7 +239,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                     <img src="2.webp" alt="算法图示2" class="img-fluid img-thumbnail" loading="lazy" data-toggle="modal" data-target="#imageModal2">
+                        <img src="2.webp" alt="算法图示2" class="img-fluid">
                     </div>
                 </div>
             </div>
@@ -256,7 +255,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <img src="3.webp" alt="算法图示3" class="img-fluid img-thumbnail" loading="lazy" data-toggle="modal" data-target="#imageModal3">
+                        <img src="3.webp" alt="算法图示3" class="img-fluid">
                     </div>
                 </div>
             </div>
@@ -313,7 +312,7 @@
                 <strong>2024-10-19 Beta</strong>: 建立学分计算模型，程序demo
             </li>
             <li class="list-group-item">
-                <strong>2024-10-21 V1.0.0</strong>: 正式版发布：1.添加数据隐私声明和源代码链接，优化界面；2.默认更合理的权重；3.优化算法；4.修复学分限制在两分的bug，原因分析：demo中用于测试的数值2在后期修改中只改了html中的数值，js中的数值没变，导致计算时最大学分限制仍为2；5.优化网页加载速度，修改内容包括但不限于使用更轻量级的webp格式， 延迟加载js，Lazy loading；6.开放源代码
+                <strong>2024-10-21 V1.0.0</strong>: 正式版发布：1.添加数据隐私声明和源代码链接，优化界面；2.默认更合理的权重；3.优化算法；4.修复学分限制在两分的bug（由朱贺提出），原因分析：demo中用于测试的数值2在后期修改中只改了html中的数值，js中的数值没变，导致计算时最大学分限制仍为2；5.优化网页加载速度（由付世鑫提出），修改内容包括但不限于使用更轻量级的webp格式， 延迟加载js，Lazy loading；6.应汤奕辰要求，开放源代码
             </li>
            </ul>
     </div>
