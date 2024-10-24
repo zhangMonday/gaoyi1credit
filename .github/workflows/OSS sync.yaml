@@ -1,4 +1,3 @@
-name: SyncToOSS
 
 on: [push]
 
@@ -26,4 +25,4 @@ jobs:
 
     - name: Deploy To OSS
       run: |
-        ossutil cp . oss://gaoyi1creditwebpage/ --recursive --exclude ".git/*" --exclude ".git"
+        ossutil cp . oss://gaoyi1creditwebpage/ --recursive --exclude ".git"
