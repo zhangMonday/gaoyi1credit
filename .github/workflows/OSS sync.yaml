@@ -8,6 +8,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        path: repo
 
     - name: Set up ossutil
       run: |
@@ -15,7 +17,7 @@ jobs:
         curl -o ossutil64 http://gosspublic.alicdn.com/ossutil/1.6.7/ossutil64
         chmod +x ossutil64
         
-        # 创建 .local/bin 目录,移动 ossutil
+        # 创建 .local/bin 目录并移动 ossutil
         mkdir -p $HOME/.local/bin
         mv ossutil64 $HOME/.local/bin/ossutil
         echo "$HOME/.local/bin" >> $GITHUB_PATH
@@ -26,6 +28,8 @@ jobs:
 
     - name: Deploy To OSS
       run: |
+        # 切换到代码目录
+        cd repo
         # 先删除 OSS 中的文件
         ossutil rm -r oss://gaoyi1creditwebpage/
         # 然后上传新的文件
