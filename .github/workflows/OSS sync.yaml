@@ -26,4 +26,7 @@ jobs:
 
     - name: Deploy To OSS
       run: |
-        ossutil sync . oss://gaoyi1creditwebpage/ --delete
+        # 先删除 OSS 中的文件
+        ossutil rm -r oss://gaoyi1creditwebpage/
+        # 然后上传新的文件
+        ossutil cp . oss://gaoyi1creditwebpage/ --recursive
