@@ -30,9 +30,9 @@ jobs:
       run: |
         # 切换到代码目录
         cd repo
-        # 先删除 OSS 中的文件
+        # 先删除 OSS 中的文件（加上 -f 选项）
         echo "Deleting files from OSS..."
-        ossutil rm -r oss://gaoyi1creditwebpage/ || echo "Failed to delete files from OSS"
+        ossutil rm -r -f oss://gaoyi1creditwebpage/
         
         # 检查 OSS 中的文件
         echo "Current files in OSS:"
