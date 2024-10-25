@@ -143,7 +143,7 @@
 <body>
  
     <div class="container">
-        <h1 class="mb-4 text-center">高一1班学分计算系统(V1.0.0) BY ZZY</h1>
+        <h1 class="mb-4 text-center">高一1班学分计算系统(V1.2.0) BY ZZY</h1>
         
         <!-- 设置区域 -->
         <div class="card mb-4">
@@ -311,14 +311,17 @@
                 <strong>2024-10-19 Beta</strong>: 建立学分计算模型，程序demo
             </li>
             <li class="list-group-item">
-                <strong>2024-10-21 V1.0.0</strong>: 正式版发布：1.添加数据隐私声明和源代码链接，优化界面；2.默认更合理的权重；3.优化算法；4.修复学分限制在两分的bug（由朱贺提出），原因分析：demo中用于测试的数值2在后期修改中只改了html中的数值，js中的数值没变，导致计算时最大学分限制仍为2；5.优化网页加载速度（由付世鑫提出），修改内容包括但不限于使用更轻量级的webp格式， 延迟加载js，Lazy loading；6.应汤奕辰要求，开放源代码
+                <strong>2024-10-21 V1.0.0</strong>: 正式版发布：1.添加数据隐私声明和源代码链接，优化界面；2.默认更合理的权重；3.优化算法；4.修复学分限制在两分的bug，原因分析：demo中用于测试的数值2在后期修改中只改了html中的数值，js中的数值没变，导致计算时最大学分限制仍为2；5.优化网页加载速度，修改内容包括但不限于使用更轻量级的webp格式， 延迟加载js，Lazy loading；6.开放源代码
+            </li>
+            <li class="list-group-item">
+                <strong>2024-10-26 V1.2.0</strong>: 1.ui升级 2.延迟加载一些不是立即需要的库，加快网页绘制速度 3.由GitHub+Vercel的托管策略改为阿里云oss（对象存储）作为服务器，网页打开速度大幅度提升
             </li>
            </ul>
     </div>
 </div>
 
 <div class="alert alert-info mt-4" role="alert">
-    <p>本系统保证公平公正，所有计算均在本地进行，不会以任何形式收集或上传任何数据（包括但不限于成绩和排名）网页一旦刷新或关闭，数据立即销毁。还是不相信？可等待网页加载完成后，断网输入成绩计算。项目已开源，欢迎检查源代码、提出issue，参与开发。</p>
+    <p>本系统保证公平公正，所有计算均在本地进行，不会以任何形式收集或上传任何数据（包括但不限于成绩和排名）网页一旦刷新或关闭，数据立即销毁。还不信？可等待网页加载完成后，断网输入成绩计算。项目已开源，欢迎检查源代码、提出issue，参与开发。</p>
     <a href="https://github.com/zhangMonday/gaoyi1credit" target="_blank" class="btn btn-outline-primary mt-2">
         <img src="github.svg" alt="GitHub" style="width: 16px; height: 16px; margin-right: 4px;">
         开源地址
