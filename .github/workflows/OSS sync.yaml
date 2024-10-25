@@ -8,8 +8,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-      with:
-        path: repo
 
     - name: Set up ossutil
       run: |
@@ -28,8 +26,6 @@ jobs:
 
     - name: Deploy To OSS
       run: |
-        # 切换到代码目录
-        cd repo
         # 先删除 OSS 中的文件
         ossutil rm -r oss://gaoyi1creditwebpage/
         # 然后上传新的文件
