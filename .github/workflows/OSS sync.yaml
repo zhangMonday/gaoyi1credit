@@ -15,7 +15,7 @@ jobs:
         curl -o ossutil64 http://gosspublic.alicdn.com/ossutil/1.6.7/ossutil64
         chmod +x ossutil64
         
-        # 创建 .local/bin 目录并移动 ossutil
+        # 创建 .local/bin 目录,移动 ossutil
         mkdir -p $HOME/.local/bin
         mv ossutil64 $HOME/.local/bin/ossutil
         echo "$HOME/.local/bin" >> $GITHUB_PATH
