@@ -660,11 +660,43 @@
         });
         
         // 导出结果为Excel
-        document.getElementById('export-results').addEventListener('click', () => {
-            const table = document.getElementById('scores-table');
-            const wb = XLSX.utils.table_to_book(table, { sheet: "Results" });
-            XLSX.writeFile(wb, '学分计算结果.xlsx');
+document.getElementById('export-results').addEventListener('click', () => {
+    const table = document.getElementById('scores-table');
+    const headers = [];
+    const rows = [];
+
+    // 获取表头
+    const headerCells = table.querySelectorAll('thead th');
+    headerCells.forEach(header => {
+        headers.push(header.textContent.trim());
+    });
+
+    // 获取表格数据
+    const tableBody = table.querySelectorAll('tbody tr');
+    tableBody.forEach(row => {
+        const rowData = [];
+        row.querySelectorAll('td').forEach((cell, index) => {
+            // 学号 (0), 姓名 (1), 上次成绩 (2), 本次成绩 (3), 上次排名 (4), 本次排名 (5), 名次变化 (6), 学分变化 (7)
+            if (index === 0 || index === 1 || index >= 4) {
+                // 对于学号、姓名、上次排名、本次排名、名次变化、学分变化，直接获取文本内容
+                rowData.push(cell.textContent.trim());
+            } else if (index === 2 || index === 3) {
+                // 对于上次成绩和本次成绩，获取输入字段的值
+                const input = cell.querySelector('input');
+                rowData.push(input ? input.value : '');
+            }
         });
+        rows.push(rowData);
+    });
+
+    // 组合表头和表格数据
+    const ws_data = [headers, ...rows];
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Results");
+    XLSX.writeFile(wb, '学分计算结果.xlsx');
+});
+
         
         // 工具函数：计算平均值
         function average(arr) {
