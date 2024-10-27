@@ -30,7 +30,7 @@ jobs:
       run: |
         # 切换到代码目录
         cd repo
-        # 先删除 OSS 中的文件（加上 -f 选项）
+        # 强制删除oss中所有文件
         echo "Deleting files from OSS..."
         ossutil rm -r -f oss://gaoyi1creditwebpage/
         
@@ -38,7 +38,7 @@ jobs:
         echo "Current files in OSS:"
         ossutil ls oss://gaoyi1creditwebpage/
         
-        # 然后上传新的文件
+        # 上传仓库
         echo "Uploading new files to OSS..."
         ossutil cp . oss://gaoyi1creditwebpage/ --recursive
         
