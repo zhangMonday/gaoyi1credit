@@ -65,7 +65,7 @@
             display: block;
         }
 
-        /* 优化表格 */
+        /*  去世统计表格绘制 */
         table {
             width: 100%;
             table-layout: fixed;
@@ -118,7 +118,7 @@
             height: auto;
         }
 
-        /* 更新日志样式 */
+        /* 更新日志 */
         #update-log .list-group-item {
             font-size: 0.95rem;
         }
@@ -145,7 +145,7 @@
 <body>
  
     <div class="container">
-        <h1 class="mb-4 text-center">高一1班学分计算系统(V1.2.1) BY ZZY</h1>
+        <h1 class="mb-4 text-center">高一1班学分计算系统(V1.2.4) BY ZZY</h1>
         
         <!-- 设置区域 -->
         <div class="card mb-4">
@@ -202,7 +202,7 @@
         </ol>
         <p>此算法确保了学分的增减不仅反映了个人的进步或退步，还综合考虑了班级整体的表现变化。即同时考虑成绩和排名变化抵消考试难易度差异的影响，通过调整权重系数和学分上限适应不同考试情况，不会出现第一名加分永远最多，最后一名加分永远最少的情况。使用本算法，即使两次考试总分不一样，也不会影响学分计算</p>
         
-        <!-- 插入图片，并使用 Bootstrap 网格系统 -->
+        <!-- 插入手写算法说明珍贵文献，并使用 Bootstrap 网格系统 -->
         <div class="row text-center">
             <div class="col-4">
                <img src="1.webp" alt="算法图示1" class="img-fluid img-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal1">
@@ -318,6 +318,9 @@
              <li class="list-group-item">
                 <strong>2024-10-27 V1.2.1</strong>:修复无法正常导出excel的bug
             </li>
+            <li class="list-group-item">
+                <strong>2024-10-28 V1.2.4</strong>:1.优化代码排版;2.解决导出的excel中无成绩的问题;3.解决算法图示点开后没法关闭的问题
+            </li>
            </ul>
     </div>
 </div>
@@ -351,7 +354,7 @@
     
     */
     
-        // 名单
+        // 本班名单
         const students = [
             { id: 1, name: "蔡克一" },
             { id: 2, name: "陈爱嘉" },
