@@ -3,120 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>高一1班学分计算系统</title>
+
     <!-- 为什么来看源代码？怕我搞后门？不信我绝交了呜呜呜呜呜呜呜呜呜呜呜呜哼-->
-    <style>
-        body {
-            padding: 20px;
-            background-color: #f8f9fa;
-            font-family: Arial, sans-serif;
-        }
-        .credit-increase {
-            color: green;
-            font-weight: bold;
-        }
-        .credit-decrease {
-            color: red;
-            font-weight: bold;
-        }
-        .table-responsive {
-            max-height: 600px;
-            overflow-y: auto;
-        }
-        .slider-label {
-            margin-bottom: 5px;
-            display: block;
-            font-weight: 500;
-        }
-        .rank-up {
-            color: green;
-        }
-        .rank-down {
-            color: red;
-        }
-        .rank-neutral {
-            color: gray;
-        }
-        /* 图表容器样式 */
-        .chart-container {
-            margin-top: 40px;
-        }
-        /* 预留空间，减少布局偏移 */
-        img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-        /*  去世统计表格绘制 */
-        table {
-            width: 100%;
-            table-layout: fixed;
-            border-collapse: collapse;
-        }
-        th, td {
-            text-align: center;
-            padding: 8px;
-            border: 1px solid #dee2e6;
-        }
-        th {
-            background-color: #f1f1f1;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-        /* 按钮样式 */
-        .btn {
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-            transform: translateY(-2px);
-        }
-        .btn:active {
-            transform: translateY(0);
-        }
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .slider-label {
-                font-size: 14px;
+
+     <style>
+
+           body {
+                padding: 20px;
+                background-color: #f8f9fa;
+                font-family: Arial, sans-serif;
             }
+
+            .credit-increase {
+                color: green;
+                font-weight: bold;
+            }
+
+            .credit-decrease {
+                color: red;
+                font-weight: bold;
+            }
+
             .table-responsive {
-                max-height: 400px;
+                max-height: 600px;
+                overflow-y: auto;
             }
-            h1 {
-                font-size: 1.5rem;
+
+            .slider-label {
+                margin-bottom: 5px;
+                display: block;
+                font-weight: 500;
             }
-        }
-        /* 模态框图片 */
-        .modal-body img {
-            width: 100%;
-            height: auto;
-        }
-        /* 更新日志 */
-        #update-log .list-group-item {
-            font-size: 0.95rem;
-        }
-        .alert-info {
-            font-size: 0.95rem;
-        }
-        /* 链接按钮样式 */
-        .btn-outline-primary img {
-            vertical-align: middle;
-        }
-    </style>
-    <!-- 延迟加载非关键CSS：Font Awesome 和 Bootstrap 5.3.0 -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"></noscript>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"></noscript>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+
+            .rank-up {
+                color: green;
+            }
+
+            .rank-down {
+                color: red;
+            }
+
+            .rank-neutral {
+                color: gray;
+            }
+
+            /* 图表容器样式 */
+            .chart-container {
+                margin-top: 40px;
+            }
+
+            /* 预留空间，减少布局偏移 */
+            img {
+                width: 100%;
+                height: auto;
+                display: block;
+            }
+
+            /*  去世统计表格绘制 */
+            table {
+                width: 100%;
+                table-layout: fixed;
+                border-collapse: collapse;
+            }
+
+            th, td {
+                text-align: center;
+                padding: 8px;
+                border: 1px solid #dee2e6;
+            }
+
+            th {
+                background-color: #f1f1f1;
+                position: sticky;
+                top: 0;
+                z-index: 1;
+            }
+
+            /* 按钮样式 */
+            .btn {
+                transition: background-color 0.3s ease, transform 0.2s ease;
+            }
+
+            .btn:hover {
+                background-color: #0056b3;
+                transform: translateY(-2px);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+            }
+
+            /* 响应式设计 */
+            @media (max-width: 768px) {
+                .slider-label {
+                    font-size: 14px;
+                }
+                .table-responsive {
+                    max-height: 400px;
+                }
+                h1 {
+                    font-size: 1.5rem;
+                }
+            }
+
+            /* 模态框图片 */
+            .modal-body img {
+                width: 100%;
+                height: auto;
+            }
+
+            /* 更新日志 */
+            #update-log .list-group-item {
+                font-size: 0.95rem;
+            }
+
+            .alert-info {
+                font-size: 0.95rem;
+            }
+
+            /* 链接按钮样式 */
+            .btn-outline-primary img {
+                vertical-align: middle;
+            }
+        </style>
+
+        <!-- 延迟加载非关键CSS：Font Awesome 和 Bootstrap 5.3.0 -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+        <noscript><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"></noscript>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+        <noscript><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"></noscript>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+
 </head>
 <body>
+
     <div class="container">
-        <h1 class="mb-4 text-center">高一1班学分计算系统(V1.2.4) BY ZZY</h1>
+        <h1 class="mb-4 text-center">高一1班学分计算系统(V1.3.0) BY ZZY</h1>
+
         <!-- 设置区域 -->
         <div class="card mb-4">
-            <div class="card-header">参数设置（如果觉得学分变化都太接近拉不开差距，可以同步增大两个权重的值再计算）</div>
+            <div class="card-header">参数设置（这里需要期中考试后讨论得出最合适的值！！！详见下面的参数设置说明）</div>
             <div class="card-body">
                 <form id="settings-form" class="row g-3">
                     <div class="col-md-4">
@@ -133,7 +162,7 @@
                         <div class="form-text">例如：最大±10学分</div>
                     </div>
                 </form>
-                <!-- 参数设置说明按钮 -->
+                <!-- 添加参数设置说明按钮 -->
                 <button class="btn btn-outline-info mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#settingsExplanation" aria-expanded="false" aria-controls="settingsExplanation">
                     <i class="fa fa-info-circle"></i> 参数设置说明
                 </button>
@@ -141,15 +170,18 @@
                     <div class="card card-body">
                         <p>在这里可以调整学分计算的参数：</p>
                         <ul>
-                            <li><strong>成绩变化权重</strong>：影响成绩变化对学分的影响程度，值越大，成绩变化对学分的影响越大。</li>
-                            <li><strong>排名变化权重</strong>：影响排名变化对学分的影响程度，值越大，排名变化对学分的影响越大。</li>
-                            <li><strong>学分变化极限值</strong>：限制学分增加或减少的最大值，防止学分变化过大。</li>
+                            <li><strong>成绩变化权重</strong>：如果成绩变化权重拉的更高，那么分数提升越是比班里平均提分大，加分越明显，扣分同理</li>
+                            <li><strong>排名变化权重</strong>：如果排名变化权重拉得更高，排名提升越是比班里同学的平均排名提升大，加分越明显，扣分同理</li>
+                            <li><strong>同时增大两个权重</strong>：所有同学的加减分幅度都提高，学分加减的差距也会更明显</li>
+                            <li><strong>同时减小两个权重</strong>：所有同学的加减分幅度都减小，除非特别明显的进步或退步，否则学分变化都大差不差</li>
+                            <li><strong>变化极限值</strong>：学分加减的极限值，如按当前权重计算后，某同学应+11分，而极限值设为10，则此人实际显示的加分为10，扣分同理</li>
                         </ul>
-                        <p>调整滑块或输入框的值后，设置会自动生效，无需点击按钮。</p>
+                        <p style="color:red">这个参数需要期中考后测试算法，得出最合适的值告诉我，我会把它设置成默认值。现在默认两个权重都是1.5,是我目前觉得最合适的值</p>
                     </div>
                 </div>
             </div>
         </div>
+
         <!-- 数据导入导出 -->
         <div class="mb-4 d-flex justify-content-between">
             <div>
@@ -164,73 +196,79 @@
                 </button>
             </div>
         </div>
-        <div class="collapse mb-4" id="algorithmExplanation">
-            <div class="card card-body">
-                <h5>学分计算算法说明</h5>
-                <p>本系统根据绩变化（ΔS）和排名变化（ΔR）来决定学分的增减。具体步骤如下：</p>
-                <ol>
-                    <li><strong>成绩变化（ΔS）</strong>：本次成绩与上次成绩的差值。</li>
-                    <li><strong>排名变化（ΔR）</strong>：上次排名与本次排名的差值。ΔR为正表示排名上升（名次变好），为负表示排名下降。</li>
-                    <li><strong>标准化处理</strong>：将所有人的ΔS和ΔR进行标准化，计算每人的z-score。</li>
-                    <li><strong>权重应用</strong>：根据设定的成绩变化权重（w<sub>S</sub>）和排名变化权重（w<sub>R</sub>），计算综合得分：</li>
-                    <pre>Credit Change = Round(w<sub>S</sub> × z<sub>S</sub> + w<sub>R</sub> × z<sub>R</sub>)</pre>
-                    <li><strong>学分变化限制</strong>：将计算结果限制在设定的极限值范围内（例如，±10学分）。</li>
-                    <li><strong>结果展示</strong>：学分增加用绿色标记，减少用红色标记，缺考不受影响。</li>
-                </ol>
-                <p>此算法确保了学分的增减不仅反映了个人的进步或退步，还综合考虑了班级整体的表现变化。即同时考虑成绩和排名变化抵消考试难易度差异的影响，通过调整权重系数和学分上限适应不同考试情况，不会出现第一名加分永远最多，最后一名加分永远最少的情况。使用本算法，即使两次考试总分不一样，也不会影响学分计算</p>
-                <!-- 插入手写算法说明珍贵文献，并使用 Bootstrap 网格系统 -->
-                <div class="row text-center">
-                    <div class="col-4">
-                        <img src="1.webp" alt="算法图示1" class="img-fluid img-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal1">
+
+<div class="collapse mb-4" id="algorithmExplanation">
+    <div class="card card-body">
+        <h5>学分计算算法说明</h5>
+        <p>本系统根据绩变化（ΔS）和排名变化（ΔR）来决定学分的增减。具体步骤如下：</p>
+        <ol>
+            <li><strong>成绩变化（ΔS）</strong>：本次成绩与上次成绩的差值。</li>
+            <li><strong>排名变化（ΔR）</strong>：上次排名与本次排名的差值。ΔR为正表示排名上升（名次变好），为负表示排名下降。</li>
+            <li><strong>标准化处理</strong>：将所有人的ΔS和ΔR进行标准化，计算每人的z-score。</li>
+            <li><strong>权重应用</strong>：根据设定的成绩变化权重（w<sub>S</sub>）和排名变化权重（w<sub>R</sub>），计算综合得分：</li>
+            <pre>Credit Change = Round(w<sub>S</sub> × z<sub>S</sub> + w<sub>R</sub> × z<sub>R</sub>)</pre>
+            <li><strong>学分变化限制</strong>：将计算结果限制在设定的极限值范围内（例如，±10学分）。</li>
+            <li><strong>结果展示</strong>：学分增加用绿色标记，减少用红色标记，缺考不受影响。</li>
+        </ol>
+        <p>此算法确保了学分的增减不仅反映了个人的进步或退步，还综合考虑了班级整体的表现变化。即同时考虑成绩和排名变化抵消考试难易度差异的影响，通过调整权重系数和学分上限适应不同考试情况，不会出现第一名加分永远最多，最后一名加分永远最少的情况。使用本算法，即使两次考试总分不一样，也不会影响学分计算</p>
+
+        <!-- 插入手写算法说明珍贵文献，并使用 Bootstrap 网格系统 -->
+        <div class="row text-center">
+            <div class="col-4">
+               <img src="1.webp" alt="算法图示1" class="img-fluid img-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal1">
+            </div>
+            <div class="col-4">
+                <img src="2.webp" alt="算法图示2" class="img-fluid img-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal2">
+            </div>
+            <div class="col-4">
+                <img src="3.webp" alt="算法图示3" class="img-fluid img-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal3"> 
+            </div>
+        </div>
+        <div class="modal fade" id="imageModal1" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="imageModalLabel1">算法图示1</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="col-4">
-                        <img src="2.webp" alt="算法图示2" class="img-fluid img-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal2">
-                    </div>
-                    <div class="col-4">
-                        <img src="3.webp" alt="算法图示3" class="img-fluid img-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal3">
-                    </div>
-                </div>
-                <div class="modal fade" id="imageModal1" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="imageModalLabel1">算法图示1</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <img src="1.webp" alt="算法图示1" class="img-fluid">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal fade" id="imageModal2" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel2" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="imageModalLabel2">算法图示2</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <img src="2.webp" alt="算法图示2" class="img-fluid">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal fade" id="imageModal3" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel3" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="imageModalLabel3">算法图示3</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <img src="3.webp" alt="算法图示3" class="img-fluid">
-                            </div>
-                        </div>
+                    <div class="modal-body">
+                        <img src="1.webp" alt="算法图示1" class="img-fluid">
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="imageModal2" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel2" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="imageModalLabel2">算法图示2</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img src="2.webp" alt="算法图示2" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="imageModal3" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel3" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="imageModalLabel3">算法图示3</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img src="3.webp" alt="算法图示3" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
         <!-- 成绩输入表格 -->
         <div class="table-responsive mb-4">
             <table class="table table-bordered table-hover" id="scores-table">
@@ -251,14 +289,17 @@
                 </tbody>
             </table>
         </div>
+
         <!-- 计算按钮 -->
         <div class="mb-4 text-center">
             <button class="btn btn-primary btn-lg" id="calculate-credits"><i class="fa fa-calculator"></i> 计算学分</button>
         </div>
+
         <!-- 学分结果展示提示 -->
         <div id="results-section">
             <!-- 结果将在此处显示 -->
         </div>
+
         <!-- 图表容器 -->
         <div class="chart-container">
             <h3 class="text-center">学分变化分布图（会在计算出学分后显示）</h3>
@@ -266,54 +307,63 @@
         </div>
     </div>
     <!-- 更新日志 -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5>更新日志</h5>
-        </div>
-        <div class="card-body">
-            <ul class="list-group list-group-flush" id="update-log">
-                <li class="list-group-item">
-                    <strong>2024-10-19 Beta</strong>: 建立学分计算模型，程序demo
-                </li>
-                <li class="list-group-item">
-                    <strong>2024-10-21 V1.0.0</strong>: 正式版发布：1.添加数据隐私声明和源代码链接，优化界面；2.默认更合理的权重；3.优化算法；4.修复学分限制在两分的bug，原因分析：demo中用于测试的数值2在后期修改中只改了html中的数值，js中的数值没变，导致计算时最大学分限制仍为2；5.优化网页加载速度，修改内容包括但不限于使用更轻量级的webp格式， 延迟加载js，Lazy loading；6.开放源代码
-                </li>
-                <li class="list-group-item">
-                    <strong>2024-10-26 V1.2.0</strong>: 1.ui升级 2.延迟加载一些不是立即需要的库，加快网页绘制速度 3.由GitHub+Vercel的托管策略改为阿里云oss（对象存储）作为服务器，网页打开速度大幅度提升
-                </li>
-                <li class="list-group-item">
-                    <strong>2024-10-27 V1.2.1</strong>:修复无法正常导出excel的bug
-                </li>
-                <li class="list-group-item">
-                    <strong>2024-10-28 V1.2.4</strong>:1.优化代码排版;2.解决导出的excel中无成绩的问题;3.解决算法图示点开后没法关闭的问题
-                </li>
-            </ul>
-        </div>
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>更新日志</h5>
     </div>
-    <div class="alert alert-info mt-4" role="alert">
-        <p>本系统保证公平公正，所有计算均在本地进行，不会以任何形式收集或上传任何数据（包括但不限于成绩和排名）网页一旦刷新或关闭，数据立即销毁。还不信？可等待网页加载完成后，断网输入成绩计算。项目已开源，欢迎检查源代码、提出issue，参与开发。</p>
-        <a href="https://github.com/zhangMonday/gaoyi1credit" target="_blank" class="btn btn-outline-primary mt-2">
-            <img src="github.svg" alt="GitHub" style="width: 16px; height: 16px; margin-right: 4px;">
-            开源地址
-        </a>
+    <div class="card-body">
+        <ul class="list-group list-group-flush" id="update-log">
+            <li class="list-group-item">
+                <strong>2024-10-19 Beta</strong>: 建立学分计算模型，程序demo
+            </li>
+            <li class="list-group-item">
+                <strong>2024-10-21 V1.0.0</strong>: 正式版发布：1.添加数据隐私声明和源代码链接，优化界面；2.默认更合理的权重；3.优化算法；4.修复学分限制在两分的bug，原因分析：demo中用于测试的数值2在后期修改中只改了html中的数值，js中的数值没变，导致计算时最大学分限制仍为2；5.优化网页加载速度，修改内容包括但不限于使用更轻量级的webp格式， 延迟加载js，Lazy loading；6.开放源代码
+            </li>
+            <li class="list-group-item">
+                <strong>2024-10-26 V1.2.0</strong>: 1.ui升级 2.延迟加载一些不是立即需要的库，加快网页绘制速度 3.由GitHub+Vercel的托管策略改为阿里云oss（对象存储）作为服务器，网页打开速度大幅度提升
+            </li>
+             <li class="list-group-item">
+                <strong>2024-10-27 V1.2.1</strong>:修复无法正常导出excel的bug
+            </li>
+            <li class="list-group-item">
+                <strong>2024-10-28 V1.2.4</strong>:1.优化代码排版;2.解决导出的excel中无成绩的问题;3.解决算法图示点开后没法关闭的问题
+            </li>
+            <li class="list-group-item">
+                <strong>2024-11-2 V1.3.0</strong>:1.优化操作逻辑，更改设置后立即生效而不需要再点击应用设置按钮；2.解释权重页；3.修复了上次缺考而此次不缺考但排名无法计算的问题
+            </li>
+           </ul>
     </div>
+</div>
+
+<div class="alert alert-info mt-4" role="alert">
+    <p>本系统保证公平公正，所有计算均在本地进行，不会以任何形式收集或上传任何数据（包括但不限于成绩和排名）网页一旦刷新或关闭，数据立即销毁。还不信？可等待网页加载完成后，断网输入成绩计算。项目已开源，欢迎检查源代码、提出issue，参与开发。</p>
+    <a href="https://github.com/zhangMonday/gaoyi1credit" target="_blank" class="btn btn-outline-primary mt-2">
+        <img src="github.svg" alt="GitHub" style="width: 16px; height: 16px; margin-right: 4px;">
+        开源地址
+    </a>
+</div>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js" async></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" defer></script>
+
     <!-- 主脚本 -->
     <script>
-        /* 
-        ▃▆█▇▄▖
-        ▟◤▖      ◥█▎
-        ◢◤   ▐       ▐▉
-        ▗◤      ▂  ▗▖     ▕█▎
-        ◤  ▗▅▖◥▄  ▀◣     █▊
-        ▐  ▕▎◥▖◣◤         ◢██
-        █◣  ◥▅█▀          ▐██◤
-        ▐█▙▂         ◢██◤
-         ◥██◣          ◢▄◤
-            ▀██▅▇▀
-        */
+             /* 
+                 　　 　▃▆█▇▄▖
+               　　 　▟◤▖　　　◥█▎
+              　　　◢◤　 ▐　　　　▐▉
+              　▗◤　　　▂　▗▖　　▕█▎
+              　◤　▗▅▖◥▄　▀◣　　█▊
+              ▐　▕▎◥▖◣◤　　　　◢██
+              █◣　◥▅█▀　　　　▐██◤
+              ▐█▙▂　　　 ◢██◤
+              　◥██◣　　　　◢▄◤
+                     ▀██▅▇▀
+
+
+    */
+
         // 本班名单
         const students = [
             { id: 1, name: "蔡克一" },
@@ -359,13 +409,14 @@
             { id: 42, name: "袁梦如" },
             { id: 43, name: "张厚涵" },
             { id: 44, name: "张璟雯" },
-            { id: 45, name: "张毅" },
+            { id: 45, name: "**" },
             { id: 46, name: "张周一" },
             { id: 47, name: "周灿" },
             { id: 48, name: "周孝儒" },
             { id: 49, name: "朱贺" },
             { id: 50, name: "邹兴宇" }
         ];
+
         // 初始化表格
         function initializeTable() {
             const tableBody = document.getElementById('table-body');
@@ -385,6 +436,7 @@
                 tableBody.appendChild(row);
             });
         }
+
         // 导入Excel文件
         document.getElementById('import-excel').addEventListener('click', () => {
             const input = document.createElement('input');
@@ -404,6 +456,7 @@
             };
             input.click();
         });
+
         // 从Excel填充表格
         function populateTableFromExcel(data) {
             // 假设Excel第一行为表头，后续行为数据
@@ -437,6 +490,7 @@
             }
             alert('成绩已成功导入！  (*^o^*)  ');
         }
+
         // 下载模板
         document.getElementById('download-template').addEventListener('click', () => {
             const wb = XLSX.utils.book_new();
@@ -450,10 +504,12 @@
             XLSX.utils.book_append_sheet(wb, ws, "成绩模板");
             XLSX.writeFile(wb, '成绩模板.xlsx');
         });
+
         // 设置变量
         let weightS = 1.5;
         let weightR = 1.5;
         let creditLimit = 10;
+
         // 更新滑块显示值并实时更新变量
         document.getElementById('weightS').addEventListener('input', function() {
             document.getElementById('weightS-value').textContent = this.value;
@@ -466,8 +522,10 @@
         document.getElementById('creditLimit').addEventListener('input', function() {
             creditLimit = parseInt(this.value);
         });
+
         // 计算学分变化
         document.getElementById('calculate-credits').addEventListener('click', () => {
+
             // 获取所有学生的成绩
             const studentData = students.map(student => {
                 const lastScoreInput = document.querySelector(`.last-score[data-id="${student.id}"]`);
@@ -486,17 +544,21 @@
                     currentRank: null
                 };
             });
-            // 处理缺考情况：如果任一考试缺考，则不计算学分变化
-            const validStudents = studentData.filter(s => s.lastScore !== null && s.currentScore !== null);
-            const absentStudents = studentData.filter(s => s.lastScore === null || s.currentScore === null);
-            if (validStudents.length === 0) {
+
+            // 处理缺考情况
+            const studentsWithLastScore = studentData.filter(s => s.lastScore !== null);
+            const studentsWithCurrentScore = studentData.filter(s => s.currentScore !== null);
+
+            // 如果所有人都没有有效的成绩
+            if (studentsWithCurrentScore.length === 0) {
                 alert('没有有效的成绩数据进行计算( Ĭ ^ Ĭ )');
                 return;
             }
+
             // 输入验证
             let invalidInput = false;
-            validStudents.forEach(s => {
-                if (isNaN(s.lastScore) || isNaN(s.currentScore)) {
+            studentsWithCurrentScore.forEach(s => {
+                if (isNaN(s.currentScore)) {
                     invalidInput = true;
                 }
             });
@@ -504,19 +566,40 @@
                 alert('存在无效的成绩输入，请检查并重新输入。( Ĭ ^ Ĭ )');
                 return;
             }
-            // 计算ΔS
-            validStudents.forEach(s => {
-                s.deltaS = s.currentScore - s.lastScore;
-            });
+
             // 计算排名，处理并列情况
-            validStudents.sort((a, b) => b.lastScore - a.lastScore);
-            assignRanks(validStudents, 'lastRank', 'lastScore');
-            validStudents.sort((a, b) => b.currentScore - a.currentScore);
-            assignRanks(validStudents, 'currentRank', 'currentScore');
-            // 计算ΔR
-            validStudents.forEach(s => {
-                s.deltaR = s.lastRank - s.currentRank;
+            studentsWithLastScore.sort((a, b) => b.lastScore - a.lastScore);
+            assignRanks(studentsWithLastScore, 'lastRank', 'lastScore');
+
+            studentsWithCurrentScore.sort((a, b) => b.currentScore - a.currentScore);
+            assignRanks(studentsWithCurrentScore, 'currentRank', 'currentScore');
+
+            // 计算ΔS，对于没有上次成绩的学生，ΔS为null
+            studentData.forEach(s => {
+                if (s.lastScore !== null && s.currentScore !== null) {
+                    s.deltaS = s.currentScore - s.lastScore;
+                } else {
+                    s.deltaS = null;
+                }
             });
+
+            // 计算ΔR，对于没有上次排名的学生，ΔR为null
+            studentData.forEach(s => {
+                if (s.lastRank !== null && s.currentRank !== null) {
+                    s.deltaR = s.lastRank - s.currentRank;
+                } else {
+                    s.deltaR = null;
+                }
+            });
+
+            // 只对有ΔS和ΔR的学生计算学分变化
+            const validStudents = studentData.filter(s => s.deltaS !== null && s.deltaR !== null);
+
+            if (validStudents.length === 0) {
+                alert('没有有效的成绩数据进行计算( Ĭ ^ Ĭ )');
+                return;
+            }
+
             // 计算班级平均值和标准差
             const deltaSValues = validStudents.map(s => s.deltaS);
             const deltaRValues = validStudents.map(s => s.deltaR);
@@ -524,14 +607,17 @@
             const stdDeltaS = standardDeviation(deltaSValues, meanDeltaS);
             const meanDeltaR = average(deltaRValues);
             const stdDeltaR = standardDeviation(deltaRValues, meanDeltaR);
+
             // 处理标准差为零的情况
             const adjustedStdDeltaS = stdDeltaS === 0 ? 1 : stdDeltaS;
             const adjustedStdDeltaR = stdDeltaR === 0 ? 1 : stdDeltaR;
+
             // 标准化
             validStudents.forEach(s => {
                 s.zS = (s.deltaS - meanDeltaS) / adjustedStdDeltaS;
                 s.zR = (s.deltaR - meanDeltaR) / adjustedStdDeltaR;
             });
+
             // 计算Credit Change
             validStudents.forEach(s => {
                 let credit = weightS * s.zS + weightR * s.zR;
@@ -542,6 +628,7 @@
                 if (credit < -creditLimit) credit = -creditLimit;
                 s.creditChange = credit;
             });
+
             // 更新表格显示
             studentData.forEach(s => {
                 const row = document.querySelector(`.last-score[data-id="${s.id}"]`).parentElement.parentElement;
@@ -561,7 +648,7 @@
                 }
                 // 名次变化
                 const rankChangeCell = row.querySelector('.rank-change');
-                if (s.lastRank === null || s.currentRank === null) {
+                if (s.deltaR === null) {
                     rankChangeCell.textContent = '-';
                     rankChangeCell.className = 'rank-change';
                 } else {
@@ -579,11 +666,16 @@
                 }
                 // 学分变化
                 const creditCell = row.querySelector('.credit-change');
-                if (s.lastScore === null || s.currentScore === null) {
+                if (s抱歉，代码有些长，我继续把剩下的代码完整发给您：
+
+```javascript
+                // 学分变化
+                const creditCell = row.querySelector('.credit-change');
+                if (s.creditChange === null) {
                     creditCell.textContent = '缺考';
                     creditCell.className = 'credit-change';
                 } else {
-                    const credit = validStudents.find(v => v.id === s.id).creditChange;
+                    const credit = s.creditChange;
                     creditCell.textContent = credit > 0 ? `+${credit}` : (credit < 0 ? `${credit}` : '0');
                     if (credit > 0) {
                         creditCell.className = 'credit-change credit-increase';
@@ -594,10 +686,12 @@
                     }
                 }
             });
+
             // 生成学分变化分布图
             generateCreditChart(validStudents);
             alert('学分计算完成。');
         });
+
         // 导出结果为Excel
         document.getElementById('export-results').addEventListener('click', () => {
             const table = document.getElementById('scores-table');
@@ -632,17 +726,20 @@
             XLSX.utils.book_append_sheet(wb, ws, "Results");
             XLSX.writeFile(wb, '学分计算结果.xlsx');
         });
+
         // 工具函数：计算平均值
         function average(arr) {
             const sum = arr.reduce((a, b) => a + b, 0);
             return sum / arr.length;
         }
+
         // 工具函数：计算标准差
         function standardDeviation(arr, mean) {
             const squaredDiffs = arr.map(value => Math.pow(value - mean, 2));
             const avgSquaredDiff = average(squaredDiffs);
             return Math.sqrt(avgSquaredDiff);
         }
+
         // 工具函数：分配排名，处理并列情况
         function assignRanks(sortedStudents, rankProperty, scoreProperty) {
             let rank = 1;
@@ -661,6 +758,7 @@
                 prevScore = score;
             });
         }
+
         // 生成学分变化分布图
         let creditChart; // 全局变量
         function generateCreditChart(validStudents) {
@@ -668,7 +766,7 @@
             const creditChanges = validStudents.map(s => s.creditChange);
             const creditLabels = [...new Set(creditChanges)].sort((a, b) => a - b);
             const creditCounts = creditLabels.map(label => creditChanges.filter(c => c === label).length);
-            // 如果图表已经存在，把它杀掉，通通杀掉
+            // 如果图表已经存在，把它杀掉
             if (creditChart) {
                 creditChart.destroy();
             }
@@ -721,13 +819,17 @@
                 }
             });
         }
+
         // 初始化表格
         initializeTable();
+
         // 初始化滑块显示值
         document.getElementById('weightS').value = weightS;
         document.getElementById('weightS-value').textContent = weightS;
         document.getElementById('weightR').value = weightR;
         document.getElementById('weightR-value').textContent = weightR;
+
     </script>
+
 </body>
 </html>
