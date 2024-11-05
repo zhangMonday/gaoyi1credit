@@ -1,7 +1,7 @@
 {
     "name": "考场时间",
     "short_name": "时钟",
-    "start_url": "./time/time.html",
+    "start_url": "https://credit1.zhangmonday.top/time.html",
     "display": "standalone",
     "background_color": "#acbaca",
     "theme_color": "#e91e63",
