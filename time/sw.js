@@ -1,7 +1,7 @@
 const CACHE_NAME = 'clock-app-cache-v1';
 const urlsToCache = [
     '/',
-    '/time/index.html',
+    '/time/time.html',
     '/time/manifest.json',
     '/time/sw.js',
     '/time/icons/icon-192.png',
