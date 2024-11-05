@@ -1,10 +1,10 @@
 const CACHE_NAME = 'clock-app-cache-v1';
 const urlsToCache = [
     '/',
-    '/index.html',
-    '/manifest.json',
-    '/sw.js',
-    '/icons/icon-192.png',
+    '/time/index.html',
+    '/time/manifest.json',
+    '/time/sw.js',
+    '/time/icons/icon-192.png',
 ];
 
 self.addEventListener('install', event => {
