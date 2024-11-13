@@ -162,7 +162,7 @@
 <body>
 
     <div class="container">
-        <h1 class="mb-4 text-center">高一1班学分计算系统(V2.1.0) BY ZZY</h1>
+        <h1 class="mb-4 text-center">高一1班学分计算系统(V2.1.1) BY ZZY</h1>
 
         <!-- 数据导入导出 -->
         <div class="mb-4 d-flex justify-content-between">
@@ -289,9 +289,6 @@
                         <th>排名</th>
                         <th>姓名</th>
                         <th>进步名次</th>
-                        <th>语文进步</th>
-                        <th>数学进步</th>
-                        <th>英语进步</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -364,7 +361,7 @@
             ▐　▕▎◥▖◣◤　　　　◢██
             █◣　◥▅█▀　　　　▐██◤
             ▐█▙▂　　　 ◢██◤
-            ◥██◣　　　　◢▄◤
+            ◥██▣　　　　◢▄◤
                  ▀██▅▇▀
         */
 
@@ -646,8 +643,7 @@
             // 计算总分名次变化
             validStudents.forEach(s => {
                 if (s.lastTotal !== null) {
-                    // 假设上次总成绩的排名基于上次总成绩
-                    // 这里需要根据上次总成绩进行排名计算
+                    // 根据上次总成绩进行排名计算
                     const lastTotalSorted = [...validStudents].sort((a, b) => b.lastTotal - a.lastTotal);
                     const lastRank = lastTotalSorted.findIndex(stu => stu.id === s.id) + 1;
                     s.lastTotalRank = lastRank;
@@ -660,7 +656,7 @@
             // 计算三科名次变化
             validStudents.forEach(s => {
                 if (s.lastThree !== null) {
-                    // 假设上次三科总成绩的排名基于上次三科总成绩
+                    // 根据上次三科总成绩进行排名计算
                     const lastThreeSorted = [...validStudents].sort((a, b) => b.lastThree - a.lastThree);
                     const lastRank = lastThreeSorted.findIndex(stu => stu.id === s.id) + 1;
                     s.lastThreeRank = lastRank;
@@ -810,177 +806,166 @@
             });
 
             // 生成进步排名表格
-            generateImprovementTables(validStudents);
+            function generateImprovementTables(validStudents) {
+                // 总分进步排名
+                const totalImprovementSorted = [...validStudents].sort((a, b) => b.totalRankChange - a.totalRankChange);
+                const totalImprovementTableBody = document.querySelector('#total-improvement-table tbody');
+                totalImprovementTableBody.innerHTML = '';
+                totalImprovementSorted.forEach((s, index) => {
+                    if (s.totalRankChange > 0) { // 只显示进步的学生
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${s.name}</td>
+                            <td>${s.totalRankChange}</td>
+                        `;
+                        totalImprovementTableBody.appendChild(row);
+                    }
+                });
 
-            // 生成学分变化分布图
-            generateCreditChart(validStudents);
-            alert('学分计算完成。');
-        });
+                // 三科进步排名
+                const threeImprovementSorted = [...validStudents].sort((a, b) => (b.threeRankChange || 0) - (a.threeRankChange || 0));
+                const threeImprovementTableBody = document.querySelector('#three-improvement-table tbody');
+                threeImprovementTableBody.innerHTML = '';
+                threeImprovementSorted.forEach((s, index) => {
+                    if (s.threeRankChange > 0) { // 只显示进步的学生
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${s.name}</td>
+                            <td>${s.threeRankChange}</td>
+                        `;
+                        threeImprovementTableBody.appendChild(row);
+                    }
+                });
+            }
 
-        // 生成进步排名表格
-        function generateImprovementTables(validStudents) {
-            // 总分进步排名
-            const totalImprovementSorted = [...validStudents].sort((a, b) => b.totalRankChange - a.totalRankChange);
-            const totalImprovementTableBody = document.querySelector('#total-improvement-table tbody');
-            totalImprovementTableBody.innerHTML = '';
-            totalImprovementSorted.forEach((s, index) => {
-                if (s.totalRankChange > 0) { // 只显示进步的学生
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${s.name}</td>
-                        <td>${s.totalRankChange}</td>
-                    `;
-                    totalImprovementTableBody.appendChild(row);
-                }
-            });
-
-            // 三科进步排名
-            const threeImprovementSorted = [...validStudents].sort((a, b) => (b.threeRankChange || 0) - (a.threeRankChange || 0));
-            const threeImprovementTableBody = document.querySelector('#three-improvement-table tbody');
-            threeImprovementTableBody.innerHTML = '';
-            threeImprovementSorted.forEach((s, index) => {
-                if (s.threeRankChange > 0) { // 只显示进步的学生
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${s.name}</td>
-                        <td>${s.threeRankChange}</td>
-                        <td>${s.chinese !== null ? s.chinese : '-'}</td>
-                        <td>${s.math !== null ? s.math : '-'}</td>
-                        <td>${s.english !== null ? s.english : '-'}</td>
-                    `;
-                    threeImprovementTableBody.appendChild(row);
-                }
-            });
-        }
-
-        // 导出结果为Excel
-        document.getElementById('export-results').addEventListener('click', () => {
-            const table = document.getElementById('scores-table');
-            const headers = [];
-            const rows = [];
-            // 获取表头
-            const headerCells = table.querySelectorAll('thead th');
-            headerCells.forEach(header => {
-                headers.push(header.textContent.trim());
-            });
-            // 获取表格数据
-            const tableBody = table.querySelectorAll('tbody tr');
-            tableBody.forEach(row => {
-                const rowData = [];
-                row.querySelectorAll('td').forEach((cell, index) => {
-                    if (index <= 12) {
-                        // 学号到地理得分，获取输入字段的值
-                        const input = cell.querySelector('input');
-                        rowData.push(input ? input.value : '');
-                    } else {
-                        // 其他列，获取文本内容
+            // 导出结果为Excel
+            document.getElementById('export-results').addEventListener('click', () => {
+                const table = document.getElementById('scores-table');
+                const headers = [];
+                const rows = [];
+                // 获取表头
+                const headerCells = table.querySelectorAll('thead th');
+                headerCells.forEach(header => {
+                    headers.push(header.textContent.trim());
+                });
+                // 获取表格数据
+                const tableBody = table.querySelectorAll('tbody tr');
+                tableBody.forEach(row => {
+                    const rowData = [];
+                    row.querySelectorAll('td').forEach((cell, index) => {
+                        if (index <= 12) {
+                            // 学号到地理得分，获取输入字段的值
+                            const input = cell.querySelector('input');
+                            rowData.push(input ? input.value : '');
+                        } else {
+                            // 其他列，获取文本内容
+                            rowData.push(cell.textContent.trim());
+                        }
+                    });
+                    rows.push(rowData);
+                });
+                // 组合表头和表格数据
+                const ws_data = [headers, ...rows];
+                const ws = XLSX.utils.aoa_to_sheet(ws_data);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "主表");
+                
+                // 添加总分进步排名
+                const totalImprovementHeaders = ["排名", "姓名", "进步名次"];
+                const totalImprovementRows = [];
+                const totalImprovementTable = document.getElementById('total-improvement-table');
+                const totalBody = totalImprovementTable.querySelector('tbody').querySelectorAll('tr');
+                totalBody.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    const rowData = [];
+                    cells.forEach(cell => {
                         rowData.push(cell.textContent.trim());
-                    }
+                    });
+                    totalImprovementRows.push(rowData);
                 });
-                rows.push(rowData);
-            });
-            // 组合表头和表格数据
-            const ws_data = [headers, ...rows];
-            const ws = XLSX.utils.aoa_to_sheet(ws_data);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "主表");
-            
-            // 添加总分进步排名
-            const totalImprovementHeaders = ["排名", "姓名", "进步名次"];
-            const totalImprovementRows = [];
-            const totalImprovementTable = document.getElementById('total-improvement-table');
-            const totalBody = totalImprovementTable.querySelector('tbody').querySelectorAll('tr');
-            totalBody.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                const rowData = [];
-                cells.forEach(cell => {
-                    rowData.push(cell.textContent.trim());
-                });
-                totalImprovementRows.push(rowData);
-            });
-            if (totalImprovementRows.length > 0) {
-                const ws_total = XLSX.utils.aoa_to_sheet([totalImprovementHeaders, ...totalImprovementRows]);
-                XLSX.utils.book_append_sheet(wb, ws_total, "总分进步排名");
-            }
-
-            // 添加三科进步排名
-            const threeImprovementHeaders = ["排名", "姓名", "进步名次", "语文进步", "数学进步", "英语进步"];
-            const threeImprovementRows = [];
-            const threeImprovementTable = document.getElementById('three-improvement-table');
-            const threeBody = threeImprovementTable.querySelector('tbody').querySelectorAll('tr');
-            threeBody.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                const rowData = [];
-                cells.forEach(cell => {
-                    rowData.push(cell.textContent.trim());
-                });
-                threeImprovementRows.push(rowData);
-            });
-            if (threeImprovementRows.length > 0) {
-                const ws_three = XLSX.utils.aoa_to_sheet([threeImprovementHeaders, ...threeImprovementRows]);
-                XLSX.utils.book_append_sheet(wb, ws_three, "三科进步排名");
-            }
-
-            XLSX.writeFile(wb, '学分计算结果.xlsx');
-        });
-
-        // 工具函数：生成学分变化分布图
-        let creditChart; // 全局变量
-        function generateCreditChart(validStudents) {
-            const ctx = document.getElementById('creditChart').getContext('2d');
-            const creditChanges = validStudents.map(s => s.totalAddedCredit);
-            const creditLabels = [...new Set(creditChanges)].sort((a, b) => b - a);
-            const creditCounts = creditLabels.map(label => creditChanges.filter(c => c === label).length);
-            // 如果图表已经存在，把它销毁
-            if (creditChart) {
-                creditChart.destroy();
-            }
-            creditChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: creditLabels.map(label => `+${label}`),
-                    datasets: [{
-                        label: '学分增加人数',
-                        data: creditCounts,
-                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: '人数'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: '学分增加'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        title: {
-                            display: false,
-                            text: '学分增加分布图'
-                        }
-                    }
+                if (totalImprovementRows.length > 0) {
+                    const ws_total = XLSX.utils.aoa_to_sheet([totalImprovementHeaders, ...totalImprovementRows]);
+                    XLSX.utils.book_append_sheet(wb, ws_total, "总分进步排名");
                 }
-            });
-        }
 
-        // 初始化表格
-        initializeTable();
+                // 添加三科进步排名
+                const threeImprovementHeaders = ["排名", "姓名", "进步名次"];
+                const threeImprovementRows = [];
+                const threeImprovementTable = document.getElementById('three-improvement-table');
+                const threeBody = threeImprovementTable.querySelector('tbody').querySelectorAll('tr');
+                threeBody.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    const rowData = [];
+                    cells.forEach(cell => {
+                        rowData.push(cell.textContent.trim());
+                    });
+                    threeImprovementRows.push(rowData);
+                });
+                if (threeImprovementRows.length > 0) {
+                    const ws_three = XLSX.utils.aoa_to_sheet([threeImprovementHeaders, ...threeImprovementRows]);
+                    XLSX.utils.book_append_sheet(wb, ws_three, "三科进步排名");
+                }
+
+                XLSX.writeFile(wb, '学分计算结果.xlsx');
+            });
+
+            // 工具函数：生成学分变化分布图
+            let creditChart; // 全局变量
+            function generateCreditChart(validStudents) {
+                const ctx = document.getElementById('creditChart').getContext('2d');
+                const creditChanges = validStudents.map(s => s.totalAddedCredit);
+                const creditLabels = [...new Set(creditChanges)].sort((a, b) => b - a);
+                const creditCounts = creditLabels.map(label => creditChanges.filter(c => c === label).length);
+                // 如果图表已经存在，把它销毁
+                if (creditChart) {
+                    creditChart.destroy();
+                }
+                creditChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: creditLabels.map(label => `+${label}`),
+                        datasets: [{
+                            label: '学分增加人数',
+                            data: creditCounts,
+                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: '人数'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: '学分增加'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: false,
+                                text: '学分增加分布图'
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 初始化表格
+            initializeTable();
 
     </script>
 
