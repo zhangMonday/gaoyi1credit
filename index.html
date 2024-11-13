@@ -341,10 +341,10 @@
     <div class="alert alert-info mt-4" role="alert">
         <p>本系统保证公平公正，所有计算均在本地进行，不会以任何形式收集或上传任何数据（包括但不限于成绩和排名）网页一旦刷新或关闭，数据立即销毁。还不信？可等待网页加载完成后，断网输入成绩计算。项目已开源，欢迎检查源代码、提出issue，参与开发。</p>
         <a href="https://github.com/zhangMonday/gaoyi1credit" target="_blank" class="btn btn-outline-primary mt-2">
-            <img src="github.svg" alt="GitHub" style="width: 16px; height: 16px; margin-right: 4px;">
+            <img src="https://cdn.jsdelivr.net/gh/zhangMonday/gaoyi1credit/github.svg" alt="GitHub" style="width: 16px; height: 16px; margin-right: 4px;">
             开源地址
         </a>
-                <a href="https://credit1.zhangmonday.top/clock.html" target="_blank" class="btn btn-outline-primary mt-2">
+        <a href="https://credit1.zhangmonday.top/clock.html" target="_blank" class="btn btn-outline-primary mt-2">
             <img src="https://credit1.zhangmonday.top/icons/icon-192.png" alt="clock" style="width: 16px; height: 16px; margin-right: 4px;">
             考场时间
         </a>
@@ -461,13 +461,22 @@
             input.accept = '.xlsx, .xls';
             input.onchange = e => {
                 const file = e.target.files[0];
+                if (!file) return;
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-                    populateTableFromExcel(jsonData);
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                        const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                        populateTableFromExcel(jsonData);
+                    } catch (error) {
+                        alert('读取Excel文件失败，请确保文件格式正确。');
+                        console.error(error);
+                    }
+                };
+                reader.onerror = function() {
+                    alert('读取Excel文件失败，请重试。');
                 };
                 reader.readAsArrayBuffer(file);
             };
@@ -495,6 +504,8 @@
                 const row = data[i];
                 if (row.length < 13) continue; // 跳过不完整的行
                 const id = parseInt(row[0]);
+                const student = students.find(s => s.id === id);
+                if (!student) continue; // 跳过不在名单中的学号
                 const lastTotal = row[2] !== undefined ? row[2] : '';
                 const lastThree = row[3] !== undefined ? row[3] : '';
                 const chinese = row[4] !== undefined ? row[4] : '';
