@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>高一1班学分计算系统</title>
 
-    <!-- 为什么来看源代码？怕我搞后门？不信我绝交了呜呜呜呜呜呜呜呜呜呜呜呜哼-->
-
+    <!-- 样式 -->
     <style>
         body {
             padding: 20px;
@@ -52,14 +51,7 @@
             margin-top: 40px;
         }
 
-        /* 预留空间，减少布局偏移 */
-        img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        /* 去世统计表格绘制 */
+        /* 表格样式 */
         table {
             width: 100%;
             table-layout: fixed;
@@ -104,12 +96,6 @@
             h1 {
                 font-size: 1.5rem;
             }
-        }
-
-        /* 模态框图片 */
-        .modal-body img {
-            width: 100%;
-            height: auto;
         }
 
         /* 更新日志 */
@@ -341,7 +327,7 @@
     <div class="alert alert-info mt-4" role="alert">
         <p>本系统保证公平公正，所有计算均在本地进行，不会以任何形式收集或上传任何数据（包括但不限于成绩和排名）网页一旦刷新或关闭，数据立即销毁。还不信？可等待网页加载完成后，断网输入成绩计算。项目已开源，欢迎检查源代码、提出issue，参与开发。</p>
         <a href="https://github.com/zhangMonday/gaoyi1credit" target="_blank" class="btn btn-outline-primary mt-2">
-            <img src="https://cdn.jsdelivr.net/gh/zhangMonday/gaoyi1credit/github.svg" alt="GitHub" style="width: 16px; height: 16px; margin-right: 4px;">
+            <img src="github.svg" alt="GitHub" style="width: 16px; height: 16px; margin-right: 4px;">
             开源地址
         </a>
         <a href="https://credit1.zhangmonday.top/clock.html" target="_blank" class="btn btn-outline-primary mt-2">
@@ -454,41 +440,12 @@
             });
         }
 
-        // 导入Excel文件
-        document.getElementById('import-excel').addEventListener('click', () => {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.xlsx, .xls';
-            input.onchange = e => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const data = new Uint8Array(e.target.result);
-                        const workbook = XLSX.read(data, { type: 'array' });
-                        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                        const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-                        populateTableFromExcel(jsonData);
-                    } catch (error) {
-                        alert('读取Excel文件失败，请确保文件格式正确。');
-                        console.error(error);
-                    }
-                };
-                reader.onerror = function() {
-                    alert('读取Excel文件失败，请重试。');
-                };
-                reader.readAsArrayBuffer(file);
-            };
-            input.click();
-        });
-
         // 从Excel填充表格
         function populateTableFromExcel(data) {
             // 假设Excel第一行为表头，后续行为数据
             // 表头应包含：学号, 姓名, 上次总成绩, 上次三科成绩, 语文得分, 数学得分, 英语得分, 物理得分, 化学得分, 生物得分, 历史得分, 政治得分, 地理得分
             if (data.length < 2) {
-                alert('Excel文件没有足够的数据，再检查下，要用旁边下载按钮的模版来导入');
+                alert('Excel文件没有足够的数据，请检查并确保使用正确的模板。');
                 return;
             }
             const header = data[0];
@@ -504,8 +461,6 @@
                 const row = data[i];
                 if (row.length < 13) continue; // 跳过不完整的行
                 const id = parseInt(row[0]);
-                const student = students.find(s => s.id === id);
-                if (!student) continue; // 跳过不在名单中的学号
                 const lastTotal = row[2] !== undefined ? row[2] : '';
                 const lastThree = row[3] !== undefined ? row[3] : '';
                 const chinese = row[4] !== undefined ? row[4] : '';
@@ -542,8 +497,29 @@
                 if (politicalInput) politicalInput.value = political;
                 if (geographyInput) geographyInput.value = geography;
             }
-            alert('成绩已成功导入！  (*^o^*)  ');
+            alert('成绩已成功导入！ 😊');
         }
+
+        // 导入Excel文件
+        document.getElementById('import-excel').addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.xlsx, .xls';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                    populateTableFromExcel(jsonData);
+                };
+                reader.readAsArrayBuffer(file);
+            };
+            input.click();
+        });
 
         // 下载模板
         document.getElementById('download-template').addEventListener('click', () => {
@@ -623,7 +599,7 @@
             const validStudents = studentData.filter(s => s.lastTotal !== null && s.lastThree !== null);
 
             if (validStudents.length === 0) {
-                alert('没有有效的成绩数据进行计算( Ĭ ^ Ĭ )');
+                alert('没有有效的成绩数据进行计算 😕');
                 return;
             }
 
@@ -635,7 +611,7 @@
                 }
             });
             if (invalidInput) {
-                alert('存在无效的成绩输入，请检查并重新输入。( Ĭ ^ Ĭ )');
+                alert('存在无效的成绩输入，请检查并重新输入。');
                 return;
             }
 
@@ -737,7 +713,7 @@
 
             // 更新表格显示
             validStudents.forEach(s => {
-                const row = document.querySelector(`.last-total-score[data-id="${s.id}"]`).parentElement.parentElement;
+                const row = document.querySelector(`.last-total-score[data-id="${s.id}"]`).closest('tr');
                 // 填充总分
                 const currentTotalCell = row.querySelector('.current-total-score');
                 currentTotalCell.textContent = s.currentTotal;
@@ -814,6 +790,430 @@
                 } else {
                     totalAddedCreditCell.classList.remove('credit-increase');
                 }
+            });
+
+            // 生成进步排名表格
+            function generateImprovementTables(validStudents) {
+                // 总分进步排名
+                const totalImprovementSorted = [...validStudents].sort((a, b) => b.totalRankChange - a.totalRankChange);
+                const totalImprovementTableBody = document.querySelector('#total-improvement-table tbody');
+                totalImprovementTableBody.innerHTML = '';
+                totalImprovementSorted.forEach((s, index) => {
+                    if (s.totalRankChange > 0) { // 只显示进步的学生
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${s.name}</td>
+                            <td>${s.totalRankChange}</td>
+                        `;
+                        totalImprovementTableBody.appendChild(row);
+                    }
+                });
+
+                // 三科进步排名
+                const threeImprovementSorted = [...validStudents].sort((a, b) => (b.threeRankChange || 0) - (a.threeRankChange || 0));
+                const threeImprovementTableBody = document.querySelector('#three-improvement-table tbody');
+                threeImprovementTableBody.innerHTML = '';
+                threeImprovementSorted.forEach((s, index) => {
+                    if (s.threeRankChange > 0) { // 只显示进步的学生
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${s.name}</td>
+                            <td>${s.threeRankChange}</td>
+                        `;
+                        threeImprovementTableBody.appendChild(row);
+                    }
+                });
+            }
+
+            // 生成学分变化分布图
+            let creditChart; // 全局变量
+            function generateCreditChart(validStudents) {
+                const ctx = document.getElementById('creditChart').getContext('2d');
+                const creditChanges = validStudents.map(s => s.totalAddedCredit);
+                const creditLabels = [...new Set(creditChanges)].sort((a, b) => b - a);
+                const creditCounts = creditLabels.map(label => creditChanges.filter(c => c === label).length);
+                // 如果图表已经存在，把它销毁
+                if (creditChart) {
+                    creditChart.destroy();
+                }
+                creditChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: creditLabels.map(label => `+${label}`),
+                        datasets: [{
+                            label: '学分增加人数',
+                            data: creditCounts,
+                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: '人数'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: '学分增加'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: false,
+                                text: '学分增加分布图'
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 导出结果为Excel
+            document.getElementById('export-results').addEventListener('click', () => {
+                const table = document.getElementById('scores-table');
+                const headers = [];
+                const rows = [];
+                // 获取表头
+                const headerCells = table.querySelectorAll('thead th');
+                headerCells.forEach(header => {
+                    headers.push(header.textContent.trim());
+                });
+                // 获取表格数据
+                const tableBody = table.querySelectorAll('tbody tr');
+                tableBody.forEach(row => {
+                    const rowData = [];
+                    row.querySelectorAll('td').forEach((cell, index) => {
+                        if (index <= 12) {
+                            // 学号到地理得分，获取输入字段的值
+                            const input = cell.querySelector('input');
+                            rowData.push(input ? input.value : '');
+                        } else {
+                            // 其他列，获取文本内容
+                            rowData.push(cell.textContent.trim());
+                        }
+                    });
+                    rows.push(rowData);
+                });
+                // 组合表头和表格数据
+                const ws_data = [headers, ...rows];
+                const ws = XLSX.utils.aoa_to_sheet(ws_data);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "主表");
+                
+                // 添加总分进步排名
+                const totalImprovementHeaders = ["排名", "姓名", "进步名次"];
+                const totalImprovementRows = [];
+                const totalImprovementTable = document.getElementById('total-improvement-table');
+                const totalBody = totalImprovementTable.querySelector('tbody').querySelectorAll('tr');
+                totalBody.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    const rowData = [];
+                    cells.forEach(cell => {
+                        rowData.push(cell.textContent.trim());
+                    });
+                    totalImprovementRows.push(rowData);
+                });
+                if (totalImprovementRows.length > 0) {
+                    const ws_total = XLSX.utils.aoa_to_sheet([totalImprovementHeaders, ...totalImprovementRows]);
+                    XLSX.utils.book_append_sheet(wb, ws_total, "总分进步排名");
+                }
+
+                // 添加三科进步排名
+                const threeImprovementHeaders = ["排名", "姓名", "进步名次"];
+                const threeImprovementRows = [];
+                const threeImprovementTable = document.getElementById('three-improvement-table');
+                const threeBody = threeImprovementTable.querySelector('tbody').querySelectorAll('tr');
+                threeBody.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    const rowData = [];
+                    cells.forEach(cell => {
+                        rowData.push(cell.textContent.trim());
+                    });
+                    threeImprovementRows.push(rowData);
+                });
+                if (threeImprovementRows.length > 0) {
+                    const ws_three = XLSX.utils.aoa_to_sheet([threeImprovementHeaders, ...threeImprovementRows]);
+                    XLSX.utils.book_append_sheet(wb, ws_three, "三科进步排名");
+                }
+
+                XLSX.writeFile(wb, '学分计算结果.xlsx');
+            });
+
+            // 初始化表格
+            document.addEventListener('DOMContentLoaded', initializeTable);
+
+            // 计算学分并生成排名表格及图表
+            document.getElementById('calculate-credits').addEventListener('click', () => {
+
+                // 获取所有学生的成绩
+                const studentData = students.map(student => {
+                    const lastTotalInput = document.querySelector(`.last-total-score[data-id="${student.id}"]`);
+                    const lastThreeInput = document.querySelector(`.last-three-score[data-id="${student.id}"]`);
+                    const chineseInput = document.querySelector(`.chinese-score[data-id="${student.id}"]`);
+                    const mathInput = document.querySelector(`.math-score[data-id="${student.id}"]`);
+                    const englishInput = document.querySelector(`.english-score[data-id="${student.id}"]`);
+                    const physicsInput = document.querySelector(`.physics-score[data-id="${student.id}"]`);
+                    const chemistryInput = document.querySelector(`.chemistry-score[data-id="${student.id}"]`);
+                    const biologyInput = document.querySelector(`.biology-score[data-id="${student.id}"]`);
+                    const historyInput = document.querySelector(`.history-score[data-id="${student.id}"]`);
+                    const politicalInput = document.querySelector(`.political-score[data-id="${student.id}"]`);
+                    const geographyInput = document.querySelector(`.geography-score[data-id="${student.id}"]`);
+                    const lastTotal = lastTotalInput.value === '' ? null : parseFloat(lastTotalInput.value);
+                    const lastThree = lastThreeInput.value === '' ? null : parseFloat(lastThreeInput.value);
+                    const chinese = chineseInput.value === '' ? null : parseFloat(chineseInput.value);
+                    const math = mathInput.value === '' ? null : parseFloat(mathInput.value);
+                    const english = englishInput.value === '' ? null : parseFloat(englishInput.value);
+                    const physics = physicsInput.value === '' ? null : parseFloat(physicsInput.value);
+                    const chemistry = chemistryInput.value === '' ? null : parseFloat(chemistryInput.value);
+                    const biology = biologyInput.value === '' ? null : parseFloat(biologyInput.value);
+                    const history = historyInput.value === '' ? null : parseFloat(historyInput.value);
+                    const political = politicalInput.value === '' ? null : parseFloat(politicalInput.value);
+                    const geography = geographyInput.value === '' ? null : parseFloat(geographyInput.value);
+                    const currentTotal = [chinese, math, english, physics, chemistry, biology, history, political, geography].filter(s => s !== null).reduce((a, b) => a + b, 0);
+                    const currentThree = [chinese, math, english].filter(s => s !== null).reduce((a, b) => a + b, 0);
+                    return {
+                        id: student.id,
+                        name: student.name,
+                        lastTotal: lastTotal,
+                        lastThree: lastThree,
+                        chinese: chinese,
+                        math: math,
+                        english: english,
+                        physics: physics,
+                        chemistry: chemistry,
+                        biology: biology,
+                        history: history,
+                        political: political,
+                        geography: geography,
+                        currentTotal: currentTotal,
+                        currentThree: currentThree,
+                        totalRank: null,
+                        threeRank: null,
+                        totalRankChange: null,
+                        threeRankChange: null,
+                        totalCredit: 0,
+                        threeCredit: 0,
+                        singleCredit: 0,
+                        improvementCredit: 0,
+                        totalAddedCredit: 0
+                    };
+                });
+
+                // 处理缺考情况
+                const validStudents = studentData.filter(s => s.lastTotal !== null && s.lastThree !== null);
+
+                if (validStudents.length === 0) {
+                    alert('没有有效的成绩数据进行计算 😕');
+                    return;
+                }
+
+                // 输入验证
+                let invalidInput = false;
+                validStudents.forEach(s => {
+                    if (isNaN(s.currentTotal) || isNaN(s.currentThree)) {
+                        invalidInput = true;
+                    }
+                });
+                if (invalidInput) {
+                    alert('存在无效的成绩输入，请检查并重新输入。');
+                    return;
+                }
+
+                // 计算总分排名
+                const sortedTotal = [...validStudents].sort((a, b) => b.currentTotal - a.currentTotal);
+                sortedTotal.forEach((student, index) => {
+                    student.totalRank = index + 1;
+                });
+
+                // 计算三科总分排名
+                const sortedThree = [...validStudents].sort((a, b) => b.currentThree - a.currentThree);
+                sortedThree.forEach((student, index) => {
+                    student.threeRank = index + 1;
+                });
+
+                // 计算总分名次变化
+                validStudents.forEach(s => {
+                    if (s.lastTotal !== null) {
+                        // 根据上次总成绩进行排名计算
+                        const lastTotalSorted = [...validStudents].sort((a, b) => b.lastTotal - a.lastTotal);
+                        const lastRank = lastTotalSorted.findIndex(stu => stu.id === s.id) + 1;
+                        s.lastTotalRank = lastRank;
+                        s.totalRankChange = s.lastTotalRank - s.totalRank;
+                    } else {
+                        s.totalRankChange = null;
+                    }
+                });
+
+                // 计算三科名次变化
+                validStudents.forEach(s => {
+                    if (s.lastThree !== null) {
+                        // 根据上次三科总成绩进行排名计算
+                        const lastThreeSorted = [...validStudents].sort((a, b) => b.lastThree - a.lastThree);
+                        const lastRank = lastThreeSorted.findIndex(stu => stu.id === s.id) + 1;
+                        s.lastThreeRank = lastRank;
+                        s.threeRankChange = s.lastThreeRank - s.threeRank;
+                    } else {
+                        s.threeRankChange = null;
+                    }
+                });
+
+                // 计算总分名次加分
+                sortedTotal.forEach((s, index) => {
+                    if (index === 0) {
+                        s.totalCredit += 8;
+                    } else if (index >=1 && index <10) {
+                        s.totalCredit += 5;
+                    }
+                });
+
+                // 计算三科总分名次加分
+                sortedThree.forEach((s, index) => {
+                    if (index <10) {
+                        s.threeCredit +=3;
+                    }
+                });
+
+                // 计算单科加分
+                const subjects = ['chinese', 'math', 'english', 'physics', 'chemistry', 'biology', 'history', 'political', 'geography'];
+                subjects.forEach(subject => {
+                    const sortedSubject = [...validStudents].sort((a, b) => b[subject] - a[subject]);
+                    sortedSubject.forEach((s, index) => {
+                        if (index <5) {
+                            s.singleCredit +=2;
+                        } else if (index >=5 && index <10) {
+                            s.singleCredit +=1;
+                        }
+                    });
+                });
+
+                // 计算进步加分
+                validStudents.forEach(s => {
+                    // 总分进步
+                    const totalImprovement = s.totalRankChange;
+                    if (totalImprovement >=1 && totalImprovement <=10) {
+                        s.improvementCredit +=1;
+                    } else if (totalImprovement >=11 && totalImprovement <=20) {
+                        s.improvementCredit +=2;
+                    } else if (totalImprovement >=21 && totalImprovement <=30) {
+                        s.improvementCredit +=3;
+                    }
+
+                    // 三科进步
+                    const threeImprovement = s.threeRankChange;
+                    if (threeImprovement >=1 && threeImprovement <=10) {
+                        s.improvementCredit +=1;
+                    } else if (threeImprovement >=11 && threeImprovement <=20) {
+                        s.improvementCredit +=2;
+                    } else if (threeImprovement >=21 && threeImprovement <=30) {
+                        s.improvementCredit +=3;
+                    }
+
+                    // 确保加分不超过15
+                    s.totalAddedCredit = s.totalCredit + s.threeCredit + s.singleCredit + s.improvementCredit;
+                    if (s.totalAddedCredit > creditLimit) {
+                        s.totalAddedCredit = creditLimit;
+                    }
+                });
+
+                // 更新表格显示
+                validStudents.forEach(s => {
+                    const row = document.querySelector(`.last-total-score[data-id="${s.id}"]`).closest('tr');
+                    // 填充总分
+                    const currentTotalCell = row.querySelector('.current-total-score');
+                    currentTotalCell.textContent = s.currentTotal;
+                    // 填充总分排名
+                    const currentTotalRankCell = row.querySelector('.current-total-rank');
+                    currentTotalRankCell.textContent = s.totalRank;
+                    // 填充三科总分
+                    const currentThreeCell = row.querySelector('.current-three-score');
+                    currentThreeCell.textContent = s.currentThree;
+                    // 填充三科排名
+                    const currentThreeRankCell = row.querySelector('.current-three-rank');
+                    currentThreeRankCell.textContent = s.threeRank;
+                    // 填充总分名次变化
+                    const totalRankChangeCell = row.querySelector('.total-rank-change');
+                    if (s.totalRankChange !== null) {
+                        const delta = s.totalRankChange;
+                        if (delta > 0) {
+                            totalRankChangeCell.textContent = `↑ ${delta}`;
+                            totalRankChangeCell.className = 'total-rank-change rank-up';
+                        } else if (delta < 0) {
+                            totalRankChangeCell.textContent = `↓ ${Math.abs(delta)}`;
+                            totalRankChangeCell.className = 'total-rank-change rank-down';
+                        } else {
+                            totalRankChangeCell.textContent = '→ 0';
+                            totalRankChangeCell.className = 'total-rank-change rank-neutral';
+                        }
+                    } else {
+                        totalRankChangeCell.textContent = '-';
+                        totalRankChangeCell.className = 'total-rank-change';
+                    }
+
+                    // 填充三科名次变化
+                    const threeRankChangeCell = row.querySelector('.three-rank-change');
+                    if (s.threeRankChange !== null) {
+                        const delta = s.threeRankChange;
+                        if (delta > 0) {
+                            threeRankChangeCell.textContent = `↑ ${delta}`;
+                            threeRankChangeCell.className = 'three-rank-change rank-up';
+                        } else if (delta < 0) {
+                            threeRankChangeCell.textContent = `↓ ${Math.abs(delta)}`;
+                            threeRankChangeCell.className = 'three-rank-change rank-down';
+                        } else {
+                            threeRankChangeCell.textContent = '→ 0';
+                            threeRankChangeCell.className = 'three-rank-change rank-neutral';
+                        }
+                    } else {
+                        threeRankChangeCell.textContent = '-';
+                        threeRankChangeCell.className = 'three-rank-change';
+                    }
+
+                    // 填充总分名次加分
+                    const totalCreditCell = row.querySelector('.total-credit');
+                    totalCreditCell.textContent = s.totalCredit;
+
+                    // 填充三科名次加分
+                    const threeCreditCell = row.querySelector('.three-credit');
+                    threeCreditCell.textContent = s.threeCredit;
+
+                    // 填充单科加分
+                    const singleCreditCell = row.querySelector('.single-credit');
+                    singleCreditCell.textContent = s.singleCredit;
+
+                    // 填充进步加分
+                    const improvementCreditCell = row.querySelector('.improvement-credit');
+                    improvementCreditCell.textContent = s.improvementCredit;
+
+                    // 填充总共加分
+                    const totalAddedCreditCell = row.querySelector('.total-added-credit');
+                    totalAddedCreditCell.textContent = s.totalAddedCredit;
+
+                    // 设置颜色
+                    if (s.totalAddedCredit > 0) {
+                        totalAddedCreditCell.classList.add('credit-increase');
+                    } else {
+                        totalAddedCreditCell.classList.remove('credit-increase');
+                    }
+                });
+
+                // 生成进步排名表格
+                generateImprovementTables(validStudents);
+
+                // 生成学分变化分布图
+                generateCreditChart(validStudents);
+                alert('学分计算完成。 🎉');
             });
 
             // 生成进步排名表格
@@ -975,10 +1375,7 @@
                 });
             }
 
-            // 初始化表格
-            initializeTable();
-
-    </script>
+        </script>
 
 </body>
 </html>
