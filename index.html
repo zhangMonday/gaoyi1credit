@@ -912,8 +912,11 @@
             tableBody.forEach(row => {
                 const rowData = [];
                 row.querySelectorAll('td').forEach((cell, index) => {
-                    if (index <= 12) {
-                        // 学号到地理得分，获取输入字段的值
+                    if (index < 2) {
+                        // 学号和姓名，获取文本内容
+                        rowData.push(cell.textContent.trim());
+                    } else if (index <= 12) {
+                        // 上次总成绩到地理得分，获取输入字段的值
                         const input = cell.querySelector('input');
                         rowData.push(input ? input.value : '');
                     } else {
