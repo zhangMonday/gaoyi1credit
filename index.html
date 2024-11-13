@@ -152,7 +152,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"></noscript>
 
-    <!-- 延迟加载 JavaScript 库，确保顺序 -->
+    <!-- 延迟加载 JavaScript 库-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
@@ -162,7 +162,7 @@
 <body>
 
     <div class="container">
-        <h1 class="mb-4 text-center">高一1班学分计算系统(V2.1.1) BY ZZY</h1>
+        <h1 class="mb-4 text-center">高一1班学分计算系统(V2.0.0) BY ZZY</h1>
 
         <!-- 数据导入导出 -->
         <div class="mb-4 d-flex justify-content-between">
@@ -182,7 +182,7 @@
         <div class="collapse mb-4" id="algorithmExplanation">
             <div class="card card-body">
                 <h5>学分计算算法说明</h5>
-                <p>本系统根据以下规则计算学分增加：</p>
+                <p>本系统根据以下规则计算学分：</p>
                 <ol>
                     <li><strong>总分排名加分</strong>：
                         <ul>
@@ -212,13 +212,13 @@
                         </ul>
                     </li>
                 </ol>
-                <p>每个人加分不得超过15分。</p>
+                <p>每个人加分不超过15分</p>
             </div>
         </div>
 
         <!-- 成绩输入表格 -->
         <div class="table-responsive mb-4">
-            <strong style="color:red">名单如果没加载出来，试着多刷新几次或清除浏览器缓存</strong>
+            <strong style="color:red">没考的科目或者缺考科目请留空，建议导入excel计算，直接在网页中输入成绩会因输入框太挤没法看到数字</strong>
             <table class="table table-bordered table-hover" id="scores-table">
                 <thead class="table-light sticky-top">
                     <tr>
@@ -249,7 +249,6 @@
                     </tr>
                 </thead>
                 <tbody id="table-body">
-                    <!-- 动态生成表格行 -->
                 </tbody>
             </table>
         </div>
@@ -292,7 +291,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- 动态生成表格行 -->
                 </tbody>
             </table>
         </div>
@@ -334,6 +332,9 @@
                 <li class="list-group-item">
                     <strong>2024-11-6 V1.4.0</strong>:为方便考场显示时间，新写了个时钟的网页，链接在页面最后开源处
                 </li>
+                  <li class="list-group-item">
+                    <strong>2024-11-14 V2.0.0</strong>:更新算法
+                </li>
                </ul>
         </div>
     </div>
@@ -353,16 +354,16 @@
     <!-- 主脚本 -->
     <script defer>
         /* 
-             ▃▆█▇▄▖
+               ▃▆█▇▄▖
             ▟◤▖　　　◥█▎
-            ◢◤　 ▐　　　　▐▉
-            ▗◤　　　▂　▗▖　　▕█▎
-            ◤　▗▅▖◥▄　▀◣　　█▊
-            ▐　▕▎◥▖◣◤　　　　◢██
-            █◣　◥▅█▀　　　　▐██◤
-            ▐█▙▂　　　 ◢██◤
-            ◥██▣　　　　◢▄◤
-                 ▀██▅▇▀
+         ◢◤　 ▐　　　　▐▉
+     ▗◤　　　▂　▗▖　　▕█▎
+      ◤　▗▅▖◥▄　▀◣　　█▊
+   ▐　▕▎◥▖◣◤　　　　◢██
+  █◣　◥▅█▀　　　　▐██◤
+ ▐█▙▂　　　 ◢██◤
+ ◥██▣　　　　◢▄◤
+       ▀██▅▇▀
         */
 
         // 本班名单
@@ -410,7 +411,7 @@
             { id: 42, name: "袁梦如" },
             { id: 43, name: "张厚涵" },
             { id: 44, name: "张璟雯" },
-            { id: 45, name: "**" },
+            { id: 45, name: "张毅" },
             { id: 46, name: "张周一" },
             { id: 47, name: "周灿" },
             { id: 48, name: "周孝儒" },
@@ -531,7 +532,7 @@
                 if (politicalInput) politicalInput.value = political;
                 if (geographyInput) geographyInput.value = geography;
             }
-            alert('成绩已成功导入！  (*^o^*)  ');
+            alert('成绩已成功导入！ 点击表格底端按钮开始计算 (*^o^*)  ');
         }
 
         // 下载模板
