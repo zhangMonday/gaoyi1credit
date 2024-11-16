@@ -374,6 +374,20 @@
  ◥██▣　　　　◢▄◤
        ▀██▅▇▀
         */
+// 自动调整列宽
+function setAutoWidth(sheet, data) {
+    const colWidths = data[0].map((header, i) => {
+        let maxWidth = header.length;
+        data.forEach(row => {
+            const cell = row[i] ? row[i].toString() : '';
+            if (cell.length > maxWidth) {
+                maxWidth = cell.length;
+            }
+        });
+        return { wch: maxWidth + 2 }; // +2 为了增加一些缓冲宽度
+    });
+    sheet['!cols'] = colWidths;
+}
 
         // 本班名单
         const students = [
@@ -907,7 +921,7 @@
             generateCreditChart(validStudents);
         });
 
- // 导出结果为Excel
+// 导出结果为Excel
 document.getElementById('export-results').addEventListener('click', () => {
     const table = document.getElementById('scores-table');
     const headers = [];
@@ -943,6 +957,9 @@ document.getElementById('export-results').addEventListener('click', () => {
     // 设置冻结第一行
     ws['!freezePane'] = 'A2'; // 冻结第一行
     
+    // 自动调整列宽
+    setAutoWidth(ws, ws_data);
+    
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "主表");
     
@@ -962,6 +979,7 @@ document.getElementById('export-results').addEventListener('click', () => {
     if (totalImprovementRows.length > 0) {
         const ws_total = XLSX.utils.aoa_to_sheet([totalImprovementHeaders, ...totalImprovementRows]);
         ws_total['!freezePane'] = 'A2'; // 冻结第一行
+        setAutoWidth(ws_total, [totalImprovementHeaders, ...totalImprovementRows]);
         XLSX.utils.book_append_sheet(wb, ws_total, "总分进步排名");
     }
 
@@ -981,9 +999,11 @@ document.getElementById('export-results').addEventListener('click', () => {
     if (threeImprovementRows.length > 0) {
         const ws_three = XLSX.utils.aoa_to_sheet([threeImprovementHeaders, ...threeImprovementRows]);
         ws_three['!freezePane'] = 'A2'; // 冻结第一行
+        setAutoWidth(ws_three, [threeImprovementHeaders, ...threeImprovementRows]);
         XLSX.utils.book_append_sheet(wb, ws_three, "三科进步排名");
     }
 
+    // 导出Excel文件
     XLSX.writeFile(wb, '学分计算结果.xlsx');
 });
 
