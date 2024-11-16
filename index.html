@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>高一1班学分计算系统</title>
-
+<link rel="icon" href="/icons/banhui.jpg">
         <!--提前加载cdn，因为新一科的网实在是太拉了-->
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -165,7 +165,7 @@
 <body>
 
     <div class="container">
-        <h1 class="mb-4 text-center">高一1班学分计算系统(V2.2.0) BY ZZY</h1>
+        <h1 class="mb-4 text-center">高一1班学分计算系统(V2.3.0) BY ZZY</h1>
 
         <!-- 数据导入导出 -->
         <div class="mb-4 d-flex justify-content-between">
@@ -340,6 +340,9 @@
                 </li>
                   <li class="list-group-item">
                     <strong>2024-11-16 V2.2.0</strong>:Bootstrap、Chart.js、xlsx库本地化，解决xyk校园网无法加载的问题
+                </li>
+                  <li class="list-group-item">
+                    <strong>2024-11-16 V2.3.0</strong>:添加班徽作为网页logo，导出的excel第一行冻结
                 </li>
                </ul>
         </div>
@@ -904,79 +907,86 @@
             generateCreditChart(validStudents);
         });
 
-        // 导出结果为Excel
-        document.getElementById('export-results').addEventListener('click', () => {
-            const table = document.getElementById('scores-table');
-            const headers = [];
-            const rows = [];
-            // 获取表头
-            const headerCells = table.querySelectorAll('thead th');
-            headerCells.forEach(header => {
-                headers.push(header.textContent.trim());
-            });
-            // 获取表格数据
-            const tableBody = table.querySelectorAll('tbody tr');
-            tableBody.forEach(row => {
-                const rowData = [];
-                row.querySelectorAll('td').forEach((cell, index) => {
-                    if (index < 2) {
-                        // 学号和姓名，获取文本内容
-                        rowData.push(cell.textContent.trim());
-                    } else if (index <= 12) {
-                        // 上次总成绩到地理得分，获取输入字段的值
-                        const input = cell.querySelector('input');
-                        rowData.push(input ? input.value : '');
-                    } else {
-                        // 其他列，获取文本内容
-                        rowData.push(cell.textContent.trim());
-                    }
-                });
-                rows.push(rowData);
-            });
-            // 组合表头和表格数据
-            const ws_data = [headers, ...rows];
-            const ws = XLSX.utils.aoa_to_sheet(ws_data);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "主表");
-            
-            // 添加总分进步排名
-            const totalImprovementHeaders = ["排名", "姓名", "进步名次"];
-            const totalImprovementRows = [];
-            const totalImprovementTable = document.getElementById('total-improvement-table');
-            const totalBody = totalImprovementTable.querySelector('tbody').querySelectorAll('tr');
-            totalBody.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                const rowData = [];
-                cells.forEach(cell => {
-                    rowData.push(cell.textContent.trim());
-                });
-                totalImprovementRows.push(rowData);
-            });
-            if (totalImprovementRows.length > 0) {
-                const ws_total = XLSX.utils.aoa_to_sheet([totalImprovementHeaders, ...totalImprovementRows]);
-                XLSX.utils.book_append_sheet(wb, ws_total, "总分进步排名");
+ // 导出结果为Excel
+document.getElementById('export-results').addEventListener('click', () => {
+    const table = document.getElementById('scores-table');
+    const headers = [];
+    const rows = [];
+    // 获取表头
+    const headerCells = table.querySelectorAll('thead th');
+    headerCells.forEach(header => {
+        headers.push(header.textContent.trim());
+    });
+    // 获取表格数据
+    const tableBody = table.querySelectorAll('tbody tr');
+    tableBody.forEach(row => {
+        const rowData = [];
+        row.querySelectorAll('td').forEach((cell, index) => {
+            if (index < 2) {
+                // 学号和姓名，获取文本内容
+                rowData.push(cell.textContent.trim());
+            } else if (index <= 12) {
+                // 上次总成绩到地理得分，获取输入字段的值
+                const input = cell.querySelector('input');
+                rowData.push(input ? input.value : '');
+            } else {
+                // 其他列，获取文本内容
+                rowData.push(cell.textContent.trim());
             }
-
-            // 添加三科进步排名
-            const threeImprovementHeaders = ["排名", "姓名", "进步名次"];
-            const threeImprovementRows = [];
-            const threeImprovementTable = document.getElementById('three-improvement-table');
-            const threeBody = threeImprovementTable.querySelector('tbody').querySelectorAll('tr');
-            threeBody.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                const rowData = [];
-                cells.forEach(cell => {
-                    rowData.push(cell.textContent.trim());
-                });
-                threeImprovementRows.push(rowData);
-            });
-            if (threeImprovementRows.length > 0) {
-                const ws_three = XLSX.utils.aoa_to_sheet([threeImprovementHeaders, ...threeImprovementRows]);
-                XLSX.utils.book_append_sheet(wb, ws_three, "三科进步排名");
-            }
-
-            XLSX.writeFile(wb, '学分计算结果.xlsx');
         });
+        rows.push(rowData);
+    });
+    // 组合表头和表格数据
+    const ws_data = [headers, ...rows];
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    
+    // 设置冻结第一行
+    ws['!freezePane'] = 'A2'; // 冻结第一行
+    
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "主表");
+    
+    // 添加总分进步排名
+    const totalImprovementHeaders = ["排名", "姓名", "进步名次"];
+    const totalImprovementRows = [];
+    const totalImprovementTable = document.getElementById('total-improvement-table');
+    const totalBody = totalImprovementTable.querySelector('tbody').querySelectorAll('tr');
+    totalBody.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const rowData = [];
+        cells.forEach(cell => {
+            rowData.push(cell.textContent.trim());
+        });
+        totalImprovementRows.push(rowData);
+    });
+    if (totalImprovementRows.length > 0) {
+        const ws_total = XLSX.utils.aoa_to_sheet([totalImprovementHeaders, ...totalImprovementRows]);
+        ws_total['!freezePane'] = 'A2'; // 冻结第一行
+        XLSX.utils.book_append_sheet(wb, ws_total, "总分进步排名");
+    }
+
+    // 添加三科进步排名
+    const threeImprovementHeaders = ["排名", "姓名", "进步名次"];
+    const threeImprovementRows = [];
+    const threeImprovementTable = document.getElementById('three-improvement-table');
+    const threeBody = threeImprovementTable.querySelector('tbody').querySelectorAll('tr');
+    threeBody.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const rowData = [];
+        cells.forEach(cell => {
+            rowData.push(cell.textContent.trim());
+        });
+        threeImprovementRows.push(rowData);
+    });
+    if (threeImprovementRows.length > 0) {
+        const ws_three = XLSX.utils.aoa_to_sheet([threeImprovementHeaders, ...threeImprovementRows]);
+        ws_three['!freezePane'] = 'A2'; // 冻结第一行
+        XLSX.utils.book_append_sheet(wb, ws_three, "三科进步排名");
+    }
+
+    XLSX.writeFile(wb, '学分计算结果.xlsx');
+});
+
 
         // 工具函数：生成学分变化分布图
         let creditChart; // 全局变量
