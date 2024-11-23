@@ -442,7 +442,7 @@
                 </li>
                  <li class="list-group-item">
                     <strong>2024-11-24 V2.4.0</strong>:更新深色模式
-                 </li>
+                </li>
                </ul>
         </div>
     </div>
@@ -469,8 +469,8 @@
       ◤　▗▅▖◥▄　▀◣　　█▊
    ▐　▕▎◥▖◣◤　　　　◢██
   █◣　◥▅█▀　　　　▐██◤
- ▐█▙▂　　　   ◢██◤
- ◥██　　 　 ◢▄◤
+ ▐█▙▂　　　 ◢██◤
+ ◥██　　　　◢▄◤
        ▀██▅▇▀
         */
     // 自动调整列宽
@@ -540,6 +540,17 @@
             { id: 49, name: "朱贺" },
             { id: 50, name: "邹兴宇" }
         ];
+
+        // 初始化表格
+        function initializeTable() {
+            const tableBody = document.getElementById('table-body');
+            tableBody.innerHTML = '';
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <
 
         // 初始化表格
         function initializeTable() {
