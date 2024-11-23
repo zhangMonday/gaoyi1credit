@@ -19,6 +19,10 @@
             --card-bg: #ffffff;
             --alert-bg: #d1ecf1;
             --link-color: #0d6efd;
+            --input-bg: #ffffff;
+            --input-border: #ced4da;
+            --scrollbar-track: #f1f1f1;
+            --scrollbar-thumb: #c1c1c1;
         }
 
         /* 深色模式变量 */
@@ -32,6 +36,10 @@
             --card-bg: #1e1e1e;
             --alert-bg: #0c5460;
             --link-color: #66b2ff;
+            --input-bg: #2c2c2c;
+            --input-border: #555555;
+            --scrollbar-track: #2c2c2c;
+            --scrollbar-thumb: #555555;
         }
 
         body {
@@ -43,12 +51,12 @@
         }
 
         .credit-increase {
-            color: green;
+            color: #28a745; /* 绿色 */
             font-weight: bold;
         }
 
         .credit-decrease {
-            color: red;
+            color: #dc3545; /* 红色 */
             font-weight: bold;
         }
 
@@ -64,11 +72,11 @@
         }
 
         .rank-up {
-            color: green;
+            color: #28a745; /* 绿色 */
         }
 
         .rank-down {
-            color: red;
+            color: #dc3545; /* 红色 */
         }
 
         .rank-neutral {
@@ -87,7 +95,7 @@
             display: block;
         }
 
-        /* 去世统计表格绘制 */
+        /* 成绩统计表格样式 */
         table {
             width: 100%;
             table-layout: fixed;
@@ -116,6 +124,8 @@
         .btn:hover {
             background-color: var(--btn-hover-bg);
             transform: translateY(-2px);
+            color: #fff;
+            border-color: var(--btn-hover-bg);
         }
 
         .btn:active {
@@ -163,11 +173,11 @@
 
         /* 排名变化颜色 */
         .rank-change.rank-up {
-            color: green;
+            color: #28a745; /* 绿色 */
         }
 
         .rank-change.rank-down {
-            color: red;
+            color: #dc3545; /* 红色 */
         }
 
         .rank-change.rank-neutral {
@@ -195,13 +205,14 @@
             background-color: var(--card-bg);
             color: var(--text-color);
             border: 1px solid var(--table-border-color);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
         /* 输入框背景和文字颜色 */
         input.form-control {
-            background-color: var(--card-bg);
+            background-color: var(--input-bg);
             color: var(--text-color);
-            border: 1px solid var(--table-border-color);
+            border: 1px solid var(--input-border);
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
@@ -215,12 +226,17 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: var(--background-color);
+            background: var(--scrollbar-track);
         }
 
         ::-webkit-scrollbar-thumb {
-            background-color: var(--table-border-color);
+            background-color: var(--scrollbar-thumb);
             border-radius: 4px;
+        }
+
+        /* 表格字体调整 */
+        table th, table td {
+            font-size: 0.9rem;
         }
 
     </style>
@@ -425,8 +441,8 @@
                     <strong>2024-11-16 V2.3.0</strong>:添加班徽作为网页logo，导出的excel第一行冻结
                 </li>
                  <li class="list-group-item">
-                    <strong>2024-11-16 V2.4.0</strong>:加入深色模式
-                </li>
+                    <strong>2024-11-24 V2.4.0</strong>:更新深色模式
+                 </li>
                </ul>
         </div>
     </div>
@@ -453,8 +469,8 @@
       ◤　▗▅▖◥▄　▀◣　　█▊
    ▐　▕▎◥▖◣◤　　　　◢██
   █◣　◥▅█▀　　　　▐██◤
- ▐█▙▂　　　 ◢██◤
- ◥██▣　　　　◢▄◤
+ ▐█▙▂　　　   ◢██◤
+ ◥██　　 　 ◢▄◤
        ▀██▅▇▀
         */
     // 自动调整列宽
@@ -1122,12 +1138,24 @@
                             title: {
                                 display: true,
                                 text: '人数'
+                            },
+                            ticks: {
+                                color: var(--text-color)
+                            },
+                            grid: {
+                                color: var(--table-border-color)
                             }
                         },
                         x: {
                             title: {
                                 display: true,
                                 text: '学分增加'
+                            },
+                            ticks: {
+                                color: var(--text-color)
+                            },
+                            grid: {
+                                display: false
                             }
                         }
                     },
@@ -1173,6 +1201,15 @@
                 themeToggleBtn.innerHTML = '<i class="fa fa-moon"></i> <span class="ms-1">深色模式</span>';
             }
             localStorage.setItem("theme", theme);
+            // 更新图表颜色
+            if (creditChart) {
+                creditChart.options.scales.y.title.color = getComputedStyle(document.body).getPropertyValue('--text-color');
+                creditChart.options.scales.y.ticks.color = getComputedStyle(document.body).getPropertyValue('--text-color');
+                creditChart.options.scales.y.grid.color = getComputedStyle(document.body).getPropertyValue('--table-border-color');
+                creditChart.options.scales.x.title.color = getComputedStyle(document.body).getPropertyValue('--text-color');
+                creditChart.options.scales.x.ticks.color = getComputedStyle(document.body).getPropertyValue('--text-color');
+                creditChart.update();
+            }
         });
     </script>
 
