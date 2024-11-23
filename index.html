@@ -4,14 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>高一1班学分计算系统</title>
-<link rel="shortcut icon" href="/icons/banhui.ico"/>
+    <link rel="shortcut icon" href="/icons/banhui.ico"/>
     <!-- 为什么来看源代码？怕我搞后门？不信我绝交了呜呜呜呜呜呜呜呜呜呜呜呜哼-->
 
     <style>
+        /* 主题颜色变量 */
+        :root {
+            --background-color: #f8f9fa;
+            --text-color: #212529;
+            --table-header-bg: #f1f1f1;
+            --table-border-color: #dee2e6;
+            --btn-hover-bg: #0056b3;
+            --btn-active-transform: translateY(0);
+            --card-bg: #ffffff;
+            --alert-bg: #d1ecf1;
+            --link-color: #0d6efd;
+        }
+
+        /* 深色模式变量 */
+        body.dark-mode {
+            --background-color: #121212;
+            --text-color: #e0e0e0;
+            --table-header-bg: #1e1e1e;
+            --table-border-color: #343a40;
+            --btn-hover-bg: #375a7f;
+            --btn-active-transform: translateY(0);
+            --card-bg: #1e1e1e;
+            --alert-bg: #0c5460;
+            --link-color: #66b2ff;
+        }
+
         body {
             padding: 20px;
-            background-color: #f8f9fa;
+            background-color: var(--background-color);
+            color: var(--text-color);
             font-family: Arial, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .credit-increase {
@@ -69,11 +97,12 @@
         th, td {
             text-align: center;
             padding: 8px;
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--table-border-color);
+            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
         }
 
         th {
-            background-color: #f1f1f1;
+            background-color: var(--table-header-bg);
             position: sticky;
             top: 0;
             z-index: 1;
@@ -81,16 +110,16 @@
 
         /* 按钮样式 */
         .btn {
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
         .btn:hover {
-            background-color: #0056b3;
+            background-color: var(--btn-hover-bg);
             transform: translateY(-2px);
         }
 
         .btn:active {
-            transform: translateY(0);
+            transform: var(--btn-active-transform);
         }
 
         /* 响应式设计 */
@@ -115,10 +144,16 @@
         /* 更新日志 */
         #update-log .list-group-item {
             font-size: 0.95rem;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--table-border-color);
         }
 
         .alert-info {
             font-size: 0.95rem;
+            background-color: var(--alert-bg);
+            color: #ffffff;
+            border: 1px solid #bee5eb;
         }
 
         /* 链接按钮样式 */
@@ -143,6 +178,51 @@
         .improvement-table {
             margin-top: 40px;
         }
+
+        /* 链接按钮颜色 */
+        a.btn-outline-primary {
+            color: var(--link-color);
+            border-color: var(--link-color);
+        }
+
+        a.btn-outline-primary:hover {
+            background-color: var(--link-color);
+            color: #fff;
+        }
+
+        /* 卡片背景颜色 */
+        .card {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--table-border-color);
+        }
+
+        /* 输入框背景和文字颜色 */
+        input.form-control {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--table-border-color);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        input.form-control::placeholder {
+            color: #6c757d;
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--background-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--table-border-color);
+            border-radius: 4px;
+        }
+
     </style>
 
     <!-- 延迟加载非关键CSS：Font Awesome -->
@@ -153,18 +233,18 @@
 
     <!-- 加载 JavaScript 库-->
     
-<script src="assets/js/xlsx.full.min.js" defer></script>
-<script src="assets/js/chart.min.js" defer></script>
-<script src="assets/js/bootstrap.bundle.min.js" defer></script>
-
+    <script src="assets/js/xlsx.full.min.js" defer></script>
+    <script src="assets/js/chart.min.js" defer></script>
+    <script src="assets/js/bootstrap.bundle.min.js" defer></script>
+    
 </head>
 <body>
 
     <div class="container">
-        <h1 class="mb-4 text-center">高一1班学分计算系统(V2.3.0) BY ZZY</h1>
+        <h1 class="mb-4 text-center">高一1班学分计算系统(V2.4.0) BY ZZY</h1>
 
-        <!-- 数据导入导出 -->
-        <div class="mb-4 d-flex justify-content-between">
+        <!-- 数据导入导出及主题切换 -->
+        <div class="mb-4 d-flex justify-content-between align-items-center">
             <div>
                 <button class="btn btn-success me-2" id="import-excel"><i class="fa fa-file-import"></i> 从Excel导入成绩</button>
                 <button class="btn btn-info" id="export-results"><i class="fa fa-file-export"></i> 导出计算结果为Excel</button>
@@ -174,6 +254,10 @@
                 <!-- 解释按钮 -->
                 <button class="btn btn-outline-info ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#algorithmExplanation" aria-expanded="false" aria-controls="algorithmExplanation">
                     <i class="fa fa-info-circle"></i> 学分算法说明
+                </button>
+                <!-- 深色模式切换按钮 -->
+                <button class="btn btn-outline-secondary ms-2" id="theme-toggle" aria-label="切换主题">
+                    <i class="fa fa-moon"></i> <span class="ms-1">深色模式</span>
                 </button>
             </div>
         </div>
@@ -340,6 +424,9 @@
                   <li class="list-group-item">
                     <strong>2024-11-16 V2.3.0</strong>:添加班徽作为网页logo，导出的excel第一行冻结
                 </li>
+                 <li class="list-group-item">
+                    <strong>2024-11-16 V2.4.0</strong>:加入深色模式
+                </li>
                </ul>
         </div>
     </div>
@@ -350,7 +437,7 @@
             <img src="github.svg" alt="GitHub" style="width: 16px; height: 16px; margin-right: 4px;">
             开源地址
         </a>
-                <a href="https://credit1.zhangmonday.top/clock.html" target="_blank" class="btn btn-outline-primary mt-2">
+        <a href="https://credit1.zhangmonday.top/clock.html" target="_blank" class="btn btn-outline-primary mt-2">
             <img src="https://credit1.zhangmonday.top/icons/icon-192.png" alt="clock" style="width: 16px; height: 16px; margin-right: 4px;">
             考场时间
         </a>
@@ -370,20 +457,20 @@
  ◥██▣　　　　◢▄◤
        ▀██▅▇▀
         */
-// 自动调整列宽
-function setAutoWidth(sheet, data) {
-    const colWidths = data[0].map((header, i) => {
-        let maxWidth = header.length;
-        data.forEach(row => {
-            const cell = row[i] ? row[i].toString() : '';
-            if (cell.length > maxWidth) {
-                maxWidth = cell.length;
-            }
+    // 自动调整列宽
+    function setAutoWidth(sheet, data) {
+        const colWidths = data[0].map((header, i) => {
+            let maxWidth = header.length;
+            data.forEach(row => {
+                const cell = row[i] ? row[i].toString() : '';
+                if (cell.length > maxWidth) {
+                    maxWidth = cell.length;
+                }
+            });
+            return { wch: maxWidth + 2 }; // +2 为了增加一些缓冲宽度
         });
-        return { wch: maxWidth + 2 }; // +2 为了增加一些缓冲宽度
-    });
-    sheet['!cols'] = colWidths;
-}
+        sheet['!cols'] = colWidths;
+    }
 
         // 本班名单
         const students = [
@@ -917,91 +1004,91 @@ function setAutoWidth(sheet, data) {
             generateCreditChart(validStudents);
         });
 
-// 导出结果为Excel
-document.getElementById('export-results').addEventListener('click', () => {
-    const table = document.getElementById('scores-table');
-    const headers = [];
-    const rows = [];
-    // 获取表头
-    const headerCells = table.querySelectorAll('thead th');
-    headerCells.forEach(header => {
-        headers.push(header.textContent.trim());
-    });
-    // 获取表格数据
-    const tableBody = table.querySelectorAll('tbody tr');
-    tableBody.forEach(row => {
-        const rowData = [];
-        row.querySelectorAll('td').forEach((cell, index) => {
-            if (index < 2) {
-                // 学号和姓名，获取文本内容
+    // 导出结果为Excel
+    document.getElementById('export-results').addEventListener('click', () => {
+        const table = document.getElementById('scores-table');
+        const headers = [];
+        const rows = [];
+        // 获取表头
+        const headerCells = table.querySelectorAll('thead th');
+        headerCells.forEach(header => {
+            headers.push(header.textContent.trim());
+        });
+        // 获取表格数据
+        const tableBody = table.querySelectorAll('tbody tr');
+        tableBody.forEach(row => {
+            const rowData = [];
+            row.querySelectorAll('td').forEach((cell, index) => {
+                if (index < 2) {
+                    // 学号和姓名，获取文本内容
+                    rowData.push(cell.textContent.trim());
+                } else if (index <= 12) {
+                    // 上次总成绩到地理得分，获取输入字段的值
+                    const input = cell.querySelector('input');
+                    rowData.push(input ? input.value : '');
+                } else {
+                    // 其他列，获取文本内容
+                    rowData.push(cell.textContent.trim());
+                }
+            });
+            rows.push(rowData);
+        });
+        // 组合表头和表格数据
+        const ws_data = [headers, ...rows];
+        const ws = XLSX.utils.aoa_to_sheet(ws_data);
+        
+        // 设置冻结第一行
+        ws['!freezePane'] = 'A2'; // 冻结第一行
+        
+        // 自动调整列宽
+        setAutoWidth(ws, ws_data);
+        
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "主表");
+        
+        // 添加总分进步排名
+        const totalImprovementHeaders = ["排名", "姓名", "进步名次"];
+        const totalImprovementRows = [];
+        const totalImprovementTable = document.getElementById('total-improvement-table');
+        const totalBody = totalImprovementTable.querySelector('tbody').querySelectorAll('tr');
+        totalBody.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const rowData = [];
+            cells.forEach(cell => {
                 rowData.push(cell.textContent.trim());
-            } else if (index <= 12) {
-                // 上次总成绩到地理得分，获取输入字段的值
-                const input = cell.querySelector('input');
-                rowData.push(input ? input.value : '');
-            } else {
-                // 其他列，获取文本内容
+            });
+            totalImprovementRows.push(rowData);
+        });
+        if (totalImprovementRows.length > 0) {
+            const ws_total = XLSX.utils.aoa_to_sheet([totalImprovementHeaders, ...totalImprovementRows]);
+            ws_total['!freezePane'] = 'A2'; // 冻结第一行
+            setAutoWidth(ws_total, [totalImprovementHeaders, ...totalImprovementRows]);
+            XLSX.utils.book_append_sheet(wb, ws_total, "总分进步排名");
+        }
+
+        // 添加三科进步排名
+        const threeImprovementHeaders = ["排名", "姓名", "进步名次"];
+        const threeImprovementRows = [];
+        const threeImprovementTable = document.getElementById('three-improvement-table');
+        const threeBody = threeImprovementTable.querySelector('tbody').querySelectorAll('tr');
+        threeBody.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const rowData = [];
+            cells.forEach(cell => {
                 rowData.push(cell.textContent.trim());
-            }
+            });
+            threeImprovementRows.push(rowData);
         });
-        rows.push(rowData);
-    });
-    // 组合表头和表格数据
-    const ws_data = [headers, ...rows];
-    const ws = XLSX.utils.aoa_to_sheet(ws_data);
-    
-    // 设置冻结第一行
-    ws['!freezePane'] = 'A2'; // 冻结第一行
-    
-    // 自动调整列宽
-    setAutoWidth(ws, ws_data);
-    
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "主表");
-    
-    // 添加总分进步排名
-    const totalImprovementHeaders = ["排名", "姓名", "进步名次"];
-    const totalImprovementRows = [];
-    const totalImprovementTable = document.getElementById('total-improvement-table');
-    const totalBody = totalImprovementTable.querySelector('tbody').querySelectorAll('tr');
-    totalBody.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        const rowData = [];
-        cells.forEach(cell => {
-            rowData.push(cell.textContent.trim());
-        });
-        totalImprovementRows.push(rowData);
-    });
-    if (totalImprovementRows.length > 0) {
-        const ws_total = XLSX.utils.aoa_to_sheet([totalImprovementHeaders, ...totalImprovementRows]);
-        ws_total['!freezePane'] = 'A2'; // 冻结第一行
-        setAutoWidth(ws_total, [totalImprovementHeaders, ...totalImprovementRows]);
-        XLSX.utils.book_append_sheet(wb, ws_total, "总分进步排名");
-    }
+        if (threeImprovementRows.length > 0) {
+            const ws_three = XLSX.utils.aoa_to_sheet([threeImprovementHeaders, ...threeImprovementRows]);
+            ws_three['!freezePane'] = 'A2'; // 冻结第一行
+            setAutoWidth(ws_three, [threeImprovementHeaders, ...threeImprovementRows]);
+            XLSX.utils.book_append_sheet(wb, ws_three, "三科进步排名");
+        }
 
-    // 添加三科进步排名
-    const threeImprovementHeaders = ["排名", "姓名", "进步名次"];
-    const threeImprovementRows = [];
-    const threeImprovementTable = document.getElementById('three-improvement-table');
-    const threeBody = threeImprovementTable.querySelector('tbody').querySelectorAll('tr');
-    threeBody.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        const rowData = [];
-        cells.forEach(cell => {
-            rowData.push(cell.textContent.trim());
-        });
-        threeImprovementRows.push(rowData);
+        // 导出Excel文件
+        XLSX.writeFile(wb, '学分计算结果.xlsx');
     });
-    if (threeImprovementRows.length > 0) {
-        const ws_three = XLSX.utils.aoa_to_sheet([threeImprovementHeaders, ...threeImprovementRows]);
-        ws_three['!freezePane'] = 'A2'; // 冻结第一行
-        setAutoWidth(ws_three, [threeImprovementHeaders, ...threeImprovementRows]);
-        XLSX.utils.book_append_sheet(wb, ws_three, "三科进步排名");
-    }
-
-    // 导出Excel文件
-    XLSX.writeFile(wb, '学分计算结果.xlsx');
-});
 
 
         // 工具函数：生成学分变化分布图
@@ -1059,6 +1146,34 @@ document.getElementById('export-results').addEventListener('click', () => {
 
         // 初始化表格在页面加载时调用
         document.addEventListener('DOMContentLoaded', initializeTable);
+
+        // 主题切换功能
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+        const currentTheme = localStorage.getItem("theme");
+
+        if (currentTheme === "dark") {
+            document.body.classList.add("dark-mode");
+            themeToggleBtn.innerHTML = '<i class="fa fa-sun"></i> <span class="ms-1">浅色模式</span>';
+        } else if (currentTheme === "light") {
+            document.body.classList.remove("dark-mode");
+            themeToggleBtn.innerHTML = '<i class="fa fa-moon"></i> <span class="ms-1">深色模式</span>';
+        } else if (prefersDarkScheme.matches) {
+            document.body.classList.add("dark-mode");
+            themeToggleBtn.innerHTML = '<i class="fa fa-sun"></i> <span class="ms-1">浅色模式</span>';
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle("dark-mode");
+            let theme = "light";
+            if (document.body.classList.contains("dark-mode")) {
+                theme = "dark";
+                themeToggleBtn.innerHTML = '<i class="fa fa-sun"></i> <span class="ms-1">浅色模式</span>';
+            } else {
+                themeToggleBtn.innerHTML = '<i class="fa fa-moon"></i> <span class="ms-1">深色模式</span>';
+            }
+            localStorage.setItem("theme", theme);
+        });
     </script>
 
 </body>
