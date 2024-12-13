@@ -687,38 +687,19 @@ function setAutoWidth(sheet, data) {
 
            
             // 计算三科名次变化
-validStudents.forEach(s => {
-    if (s.lastThree !== null) {
-        const lastThreeSorted = [...validStudents].sort((a, b) => (b.currentThree || 0) - (a.currentThree || 0));
-        const lastRank = lastThreeSorted.findIndex(stu => stu.id === s.id) + 1; // 计算上次排名
-        s.threeRankChange = lastRank - s.threeRank; // 计算名次变化
-    } else {
-        s.threeRankChange = null; // 处理没有上次成绩的情况
-    }
-});
 
-console.log("计算名次变化前的学生数据:", validStudents);
-            
-validStudents.forEach(s => {
-    if (s.lastTotal !== null) {
-        const lastTotalSorted = [...validStudents].sort((a, b) => b.lastTotal - a.lastTotal);
-        const lastRank = lastTotalSorted.findIndex(stu => stu.id === s.id) + 1; // 计算上次排名
-        s.totalRankChange = lastRank - s.totalRank; // 计算名次变化
-        console.log(`学生: ${s.name}, 上次排名: ${lastRank}, 当前排名: ${s.totalRank}, 名次变化: ${s.totalRankChange}`);
-    } else {
-        s.totalRankChange = null; // 处理没有上次成绩的情况
-    }
-});
+           validStudents.forEach(s => {
+                if (s.lastThree !== null) {
+                    // 根据上次三科总成绩进行排名计算
+                    const lastThreeSorted = [...validStudents].sort((a, b) => b.lastThree - a.lastThree);
+                    const lastRank = lastThreeSorted.findIndex(stu => stu.id === s.id) + 1;
+                    s.lastThreeRank = lastRank;
+                    s.threeRankChange = s.lastThreeRank - s.threeRank;
+                } else {
+                    s.threeRankChange = null;
+                }
+            });
 
-  console.log("总分排名结果:", validStudents.map(s => ({
-    name: s.name,
-    totalRank: s.totalRank,
-    lastTotal: s.lastTotal,
-    lastRank: s.lastTotalRank,
-    totalRankChange: s.totalRankChange
-})));
-
-            console.log("计算名次变化后的学生数据:", validStudents);
 
             // 计算总分名次加分
             sortedTotal.forEach((s, index) => {
