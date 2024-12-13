@@ -729,15 +729,14 @@ function setAutoWidth(sheet, data) {
                     }
                 });
             });
-
- // 计算进步加分
-validStudents.forEach(s => {
-    // 总分进步
-    const totalImprovement = s.totalRankChange;
-    if (totalImprovement >= 6 && totalImprovement <= 10) {
-        s.improvementCredit += 1;
+            // 计算进步加分
+            validStudents.forEach(s => {
+           // 总分进步
+           const totalImprovement = s.totalRankChange;
+          if (totalImprovement >= 6 && totalImprovement <= 10) {
+          s.improvementCredit += 1;
     } else if (totalImprovement >= 11 && totalImprovement <= 20) {
-        s.improvementCredit += 2;
+          s.improvementCredit += 2;
     } else if (totalImprovement > 20) {
         s.improvementCredit += 3;
     }
@@ -752,6 +751,8 @@ validStudents.forEach(s => {
         s.improvementCredit += 3;
     }
 });
+
+
 
  
 
