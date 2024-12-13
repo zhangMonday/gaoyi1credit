@@ -660,13 +660,6 @@ function setAutoWidth(sheet, data) {
             sortedTotal.forEach((student, index) => {
                 student.totalRank = index + 1;
             });
-            console.log("总分排名结果:", validStudents.map(s => ({
-    name: s.name,
-    totalRank: s.totalRank,
-    lastTotal: s.lastTotal,
-    lastRank: lastRank,
-    totalRankChange: s.totalRankChange
-})));
 
 
             // 计算三科总分排名
@@ -674,6 +667,7 @@ function setAutoWidth(sheet, data) {
             sortedThree.forEach((student, index) => {
                 student.threeRank = index + 1;
             });
+            
 
             // 计算总分名次变化
             validStudents.forEach(s => {
@@ -703,6 +697,14 @@ function setAutoWidth(sheet, data) {
                     s.threeRankChange = null;
                 }
             });
+            console.log("总分排名结果:", validStudents.map(s => ({
+    name: s.name,
+    totalRank: s.totalRank,
+    lastTotal: s.lastTotal,
+    lastRank: lastRank,
+    totalRankChange: s.totalRankChange
+})));
+
 
             // 计算总分名次加分
             sortedTotal.forEach((s, index) => {
