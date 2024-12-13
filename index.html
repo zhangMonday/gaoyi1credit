@@ -731,7 +731,6 @@
                 });
 
                 const threeImprovementSorted = [...validStudents].sort((a, b) => (b.threeRankChange || 0) - (a.threeRankChange || 0));
-                const threeImprovementTableBody = document
                 const threeImprovementTableBody = document.querySelector('#three-improvement-table tbody');
                 threeImprovementTableBody.innerHTML = '';
                 threeImprovementSorted.forEach((s, index) => {
