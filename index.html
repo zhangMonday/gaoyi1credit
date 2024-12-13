@@ -669,6 +669,9 @@ function setAutoWidth(sheet, data) {
 
             // 计算总分名次变化
             validStudents.forEach(s => {
+
+            console.log(`学生: ${s.name} 上次总成绩: ${s.lastTotal}, 当前总成绩: ${s.currentTotal}`);
+
                 if (s.lastTotal !== null) {
                     // 根据上次总成绩进行排名计算
                     const lastTotalSorted = [...validStudents].sort((a, b) => b.lastTotal - a.lastTotal);
