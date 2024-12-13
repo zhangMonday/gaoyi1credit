@@ -981,7 +981,6 @@ document.getElementById('export-results').addEventListener('click', () => {
     });
     if (totalImprovementRows.length > 0) {
         const ws_total = XLSX.utils.aoa_to_sheet([totalImprovementHeaders, ...totalImprovementRows]);
-        ws_total['!freezePane'] = 'A2'; // 冻结第一行
         setAutoWidth(ws_total, [totalImprovementHeaders, ...totalImprovementRows]);
         XLSX.utils.book_append_sheet(wb, ws_total, "总分进步排名");
     }
