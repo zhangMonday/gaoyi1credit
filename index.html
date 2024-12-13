@@ -697,14 +697,13 @@ function setAutoWidth(sheet, data) {
                     s.threeRankChange = null;
                 }
             });
-            console.log("总分排名结果:", validStudents.map(s => ({
+  console.log("总分排名结果:", validStudents.map(s => ({
     name: s.name,
     totalRank: s.totalRank,
     lastTotal: s.lastTotal,
-    lastRank: lastRank,
+    lastRank: s.lastTotalRank,
     totalRankChange: s.totalRankChange
 })));
-
 
             // 计算总分名次加分
             sortedTotal.forEach((s, index) => {
