@@ -685,7 +685,18 @@ function setAutoWidth(sheet, data) {
                 }
             });
 
+           
             // 计算三科名次变化
+validStudents.forEach(s => {
+    if (s.lastThree !== null) {
+        const lastThreeSorted = [...validStudents].sort((a, b) => (b.currentThree || 0) - (a.currentThree || 0));
+        const lastRank = lastThreeSorted.findIndex(stu => stu.id === s.id) + 1; // 计算上次排名
+        s.threeRankChange = lastRank - s.threeRank; // 计算名次变化
+    } else {
+        s.threeRankChange = null; // 处理没有上次成绩的情况
+    }
+});
+
 console.log("计算名次变化前的学生数据:", validStudents);
             
 validStudents.forEach(s => {
@@ -759,21 +770,7 @@ validStudents.forEach(s => {
                 } else if (threeImprovement >=21 && threeImprovement <=30) {
                     s.improvementCredit +=3;
                 }
-                validStudents.forEach(s => {
-    console.log(`学生: ${s.name}, 上次成绩: ${s.lastScores}, 当前成绩: ${s.currentScores}`);
-    
-    if (s.lastScores && s.currentScores) {
-        s.subjectProgress = s.currentScores.map((current, index) => {
-            const progress = current - s.lastScores[index];
-            console.log(`科目 ${index + 1} 进步: ${progress}`);
-            return progress;
-        });
-    } else {
-        s.subjectProgress = null;
-        console.log(`学生 ${s.name} 没有成绩数据`);
-    }
-});
-
+ 
 
                 // 确保加分不超过15
                 s.totalAddedCredit = s.totalCredit + s.threeCredit + s.singleCredit + s.improvementCredit;
