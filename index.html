@@ -206,9 +206,6 @@
                     </li>
                     <li><strong>进步排名加分</strong>：
                         <ul>
-                            <li>总分比上一次考试进步6-10名，加1分</li>
-                            <li>总分比上一次考试进步11-20名，加2分</li>
-                            <li>总分比上一次考试进步20以上，加3分</li>
                             <li>三科比上一次考试进步6-10名，加1分</li>
                             <li>三科比上一次考试进步11-20名，加2分</li>
                             <li>三科比上一次考试进步20以上，加3分</li>
@@ -247,7 +244,7 @@
                         <th>总分前几加分</th>
                         <th>三科前几加分</th>
                         <th>单科前几加分</th>
-                        <th>总分和三科的进步加分</th>
+                        <th>三科的进步加分</th>
                         <th>总共加分</th>
                     </tr>
                 </thead>
@@ -732,7 +729,7 @@ function setAutoWidth(sheet, data) {
             // 计算进步加分
             validStudents.forEach(s => {
            // 总分进步
-           const totalImprovement = s.totalRankChange;
+ /*        const totalImprovement = s.totalRankChange;
           if (totalImprovement >= 6 && totalImprovement <= 10) {
           s.improvementCredit += 1;
     } else if (totalImprovement >= 11 && totalImprovement <= 20) {
@@ -740,7 +737,7 @@ function setAutoWidth(sheet, data) {
     } else if (totalImprovement > 20) {
         s.improvementCredit += 3;
     }
-
+*/
     // 三科进步
     const threeImprovement = s.threeRankChange;
     if (threeImprovement >= 6 && threeImprovement <= 10) {
