@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>考场时间</title>
-    
-    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Poetsen+One&family=Rowdies:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -22,7 +20,22 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: #acbaca;
+            background: linear-gradient(-45deg, #acbaca, #c9d5e0, #e1e8ed, #f0f5fa);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .clock {
@@ -38,7 +51,7 @@
                 inset 15px 15px 10px rgba(255, 255, 255, 0.75),
                 -15px -15px 35px rgba(255, 255, 255, 0.55),
                 inset -1px -1px 10px rgba(0, 0, 0, 0.2);
-            margin-bottom: 30px; /* 增加间距 */
+            margin-bottom: 20px;
         }
 
         .clock::before {
@@ -141,36 +154,62 @@
 
         /* 数字时钟样式 */
         #digital-clock {
-            font-size: 5em; /* 放大字体 */
-            color: #fff;
-            background: #152b4a;
-            padding: 20px 40px;
-            border-radius: 10px;
-            box-shadow: 5px 5px 15px #152b4a66,
-                        inset 5px 5px 5px rgba(255, 255, 255, 0.75),
-                        -6px -6px 10px rgba(255, 255, 255, 1);
-            margin-bottom: 20px; /* 与按钮间距 */
+            font-size: 5.5em;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(to right, #2196f3, #e91e63);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            margin: 20px 0;
+            letter-spacing: 2px;
         }
 
         /* 全屏按钮样式 */
         #fullscreen-btn {
-            padding: 10px 20px;
-            font-size: 1em;
+            padding: 12px 24px;
+            font-size: 1.1em;
             color: #fff;
             background-color: #e91e63;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+            margin-top: 10px;
         }
 
         #fullscreen-btn:hover {
             background-color: #d81b60;
+            transform: translateY(-2px);
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* 签名文字 */
+        .signature {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.2em;
+            font-style: italic;
+        }
+
+
+        .wish {
+            margin-top: 30px;
+            font-size: 3em; /* 放大字体 */
+            color: #F76B6E; 
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            font-weight: bold;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
+    <div class="wish">祝各位同学考试顺利</div>
+    
     <div class="clock">
         <div class="numbers">
             <span style="--i:0"><b>12</b></span>
@@ -182,12 +221,12 @@
             <div class="circle" id="sc"><i></i></div>
         </div>
     </div>
-
-    <!-- 数字时钟容器 -->
+    
     <div id="digital-clock">00:00:00</div>
-
-    <!-- 全屏按钮 -->
+    
     <button id="fullscreen-btn">全屏/退出全屏</button>
+    
+    <div class="signature">BY ZZY</div>
 
     <script>
         // 模拟时钟
